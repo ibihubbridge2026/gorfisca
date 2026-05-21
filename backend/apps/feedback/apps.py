@@ -1,0 +1,11 @@
+from django.apps import AppConfig
+
+
+class FeedbackConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'apps.feedback'
+    verbose_name = 'Feedback System'
+    
+    def ready(self):
+        # Importer les signaux si nécessaire
+        pass

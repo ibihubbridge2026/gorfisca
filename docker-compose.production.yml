@@ -1,0 +1,258 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # WEB APPLICATION (Django + Gunicorn)
+  # ==========================================
+  web:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gorfisca_web
+    restart: unless-stopped
+    environment:
+      - DEBUG=False
+      - DATABASE_URL=postgresql://gorfisca_user:${DB_PASSWORD}@db:5432/${DB_NAME}
+      - REDIS_URL=redis://redis:6379/1
+      - CACHE_URL=redis://redis:6379/1
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - media_files:/app/media
+      - static_files:/app/staticfiles
+      - backups:/app/backups
+    networks:
+      - gorfisca_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/core/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==========================================
+  # FRONTEND (Next.js)
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gorfisca_frontend
+    restart: unless-stopped
+    environment:
+      - NEXT_PUBLIC_API_URL=http://web:8000/api/v1
+      - NODE_ENV=production
+    env_file:
+      - ./frontend/.env.local
+    depends_on:
+      - web
+    networks:
+      - gorfisca_network
+
+  # ==========================================
+  # DATABASE (PostgreSQL)
+  # ==========================================
+  db:
+    image: postgres:15-alpine
+    container_name: gorfisca_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_NAME:-gorfisca_prod}
+      - POSTGRES_USER=${DB_USER:-gorfisca_user}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    networks:
+      - gorfisca_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-gorfisca_user} -d ${DB_NAME:-gorfisca_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # CACHE (Redis)
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: gorfisca_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - gorfisca_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ==========================================
+  # REVERSE PROXY (Nginx)
+  # ==========================================
+  nginx:
+    image: nginx:alpine
+    container_name: gorfisca_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - static_files:/var/www/static:ro
+      - media_files:/var/www/media:ro
+    depends_on:
+      - web
+      - frontend
+    networks:
+      - gorfisca_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==========================================
+  # MONITORING (Prometheus + Grafana)
+  # ==========================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: gorfisca_prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - gorfisca_network
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: gorfisca_grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - gorfisca_network
+    ports:
+      - "3001:3000"
+
+  # ==========================================
+  # LOGGING (ELK Stack)
+  # ==========================================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: gorfisca_elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - gorfisca_network
+    ports:
+      - "9200:9200"
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: gorfisca_logstash
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./logs:/var/log/gorfisca:ro
+    depends_on:
+      - elasticsearch
+    networks:
+      - gorfisca_network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: gorfisca_kibana
+    restart: unless-stopped
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - gorfisca_network
+    ports:
+      - "5601:5601"
+
+  # ==========================================
+  # BACKUP SERVICE
+  # ==========================================
+  backup:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gorfisca_backup
+    restart: "no"
+    environment:
+      - DATABASE_URL=postgresql://gorfisca_user:${DB_PASSWORD}@db:5432/${DB_NAME}
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    volumes:
+      - backups:/app/backups
+      - ./scripts/backup_db.py:/app/backup_db.py:ro
+    networks:
+      - gorfisca_network
+    command: python backup_db.py
+
+# ==========================================
+# VOLUMES
+# ==========================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  static_files:
+    driver: local
+  media_files:
+    driver: local
+  backups:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+
+# ==========================================
+# NETWORKS
+# ==========================================
+networks:
+  gorfisca_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

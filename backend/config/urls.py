@@ -8,8 +8,11 @@ urlpatterns = [
     path('api/v1/auth/', include('apps.users.urls')),
     path('api/v1/organizations/', include('apps.organizations.urls')),
     path('api/v1/accounting/', include('apps.accounting.urls')),
+    path('api/v1/invoicing/', include('apps.invoicing.urls')),
     path('api/v1/reconciliation/', include('apps.reconciliation.urls')),
     path('api/v1/ai/', include('apps.ai_assistant.urls')),
+    path('api/v1/feedback/', include('apps.feedback.urls')),
+    path('api/v1/core/', include('apps.core.urls')),
     path('api/v1/', include('apps.reporting.urls')),
 ]
 

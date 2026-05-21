@@ -4,13 +4,18 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.files.base import ContentFile
+from django.utils import timezone
 import io
+import logging
 import PyPDF2
 from PIL import Image
 try:
     import pytesseract  # Optional OCR dependency
 except ImportError:
     pytesseract = None
+
+# Logger spécifique pour le monitoring IA
+logger = logging.getLogger('ai_monitoring')
 from .serializers import (
     DocumentAnalysisSerializer,
     DocumentAnalysisResponseSerializer,
@@ -350,6 +355,7 @@ class AIAssistantViewSet(viewsets.ViewSet):
             
             if not ai_client:
                 # Fallback to heuristic matching if AI is not available
+                logger.warning("IA_FALLBACK_TRIGGERED - AI client not available, using heuristic matching")
                 return Response({
                     'success': True,
                     'matches': self._heuristic_magic_match(transaction_data, journal_entries),
@@ -371,6 +377,8 @@ class AIAssistantViewSet(viewsets.ViewSet):
                 organization_context=account_context
             )
             
+            logger.info(f"IA_SUCCESS - Magic Match completed successfully with {len(matches)} matches")
+            
             return Response({
                 'success': True,
                 'matches': matches,
@@ -380,6 +388,7 @@ class AIAssistantViewSet(viewsets.ViewSet):
         except Exception as e:
             # Fallback to heuristic matching on error
             try:
+                logger.warning(f"IA_FALLBACK_TRIGGERED - AI error: {str(e)}, using heuristic matching")
                 matches = self._heuristic_magic_match(transaction_data, journal_entries)
                 return Response({
                     'success': True,
