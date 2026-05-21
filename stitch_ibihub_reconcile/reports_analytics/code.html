@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ibihub Reconcile | Reports &amp; Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f9f9fb",
+                    "on-tertiary-container": "#fffbff",
+                    "on-surface-variant": "#3e4942",
+                    "surface-container-highest": "#e2e2e4",
+                    "surface-bright": "#f9f9fb",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "primary": "#006947",
+                    "error": "#ba1a1a",
+                    "surface-container": "#eeeef0",
+                    "outline-variant": "#bdcac0",
+                    "on-secondary-fixed": "#002020",
+                    "surface-tint": "#006c49",
+                    "surface-container-high": "#e8e8ea",
+                    "on-surface": "#1a1c1d",
+                    "on-secondary-container": "#006e6e",
+                    "secondary-container": "#90efef",
+                    "tertiary-fixed-dim": "#fbbc00",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#00855b",
+                    "tertiary-fixed": "#ffdfa0",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#8bf8c3",
+                    "primary-fixed-dim": "#6fdba8",
+                    "inverse-primary": "#6fdba8",
+                    "background": "#f9f9fb",
+                    "on-tertiary-fixed": "#261a00",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2f3132",
+                    "surface-container-low": "#f3f3f5",
+                    "tertiary": "#765700",
+                    "surface-variant": "#e2e2e4",
+                    "secondary-fixed-dim": "#76d6d5",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#1a1c1d",
+                    "on-primary-fixed": "#002113",
+                    "on-tertiary-fixed-variant": "#5c4300",
+                    "error-container": "#ffdad6",
+                    "secondary": "#006a6a",
+                    "on-primary-fixed-variant": "#005236",
+                    "outline": "#6e7a72",
+                    "surface-dim": "#d9dadc",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#956e00",
+                    "on-primary-container": "#f5fff6",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#93f2f2",
+                    "inverse-on-surface": "#f0f0f2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9fb;
+        }
+        .editorial-shadow {
+            box-shadow: 0 30px 60px -12px rgba(26, 28, 29, 0.04);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="text-on-surface bg-surface min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-emerald-950 flex flex-col p-6 gap-2 z-50 editorial-shadow font-['Manrope'] tracking-tight">
+<div class="flex items-center gap-3 mb-10 px-2">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-white tracking-wide">Ibihub Reconcile</h1>
+<p class="text-[10px] text-emerald-500/80 uppercase tracking-[0.2em]">Financial Sanctuary</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="text-sm font-medium">Sales</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="text-sm font-medium">Treasury</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-sm font-medium">Accounting</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span class="text-sm font-medium">Reconciliation</span>
+</a>
+<!-- Active State: Reports -->
+<a class="flex items-center gap-3 px-4 py-3 bg-emerald-700/40 text-emerald-50 font-semibold rounded-xl translate-x-1 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="assessment" style="font-variation-settings: 'FILL' 1;">assessment</span>
+<span class="text-sm">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-emerald-900/50">
+<div class="flex items-center gap-3 px-2">
+<img alt="User Profile Avatar" class="w-10 h-10 rounded-full bg-emerald-800/40 border border-emerald-700/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDimRxFoQNCZXYQ1tCx0HOOJhBffgRiN9PW57AEDphudXfIt-VvMWO-aHAz5XFG3P3WdGn1nW1os3CN4qQcc0wuoJn8CQYnBf8zkTWN-pYMXwBwiJPGLTyaz4sOgiNAKZCNLOgFIcUsoBr5Y6tHaz4YXOGlHWy--5YuD7w6mmGB9QnMvbSd2_U7JHv2zjicKAmB7RprZrFO9JgIewBeUP0X_H26QdASsu-9HDi00BA078Zd5uNwL-JH4JLQJnjYxd8dlo6Zj4848m8"/>
+<div class="overflow-hidden">
+<p class="text-sm font-semibold text-white truncate">Marcus Chen</p>
+<p class="text-xs text-emerald-500/60 truncate">Chief Auditor</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-slate-50/80 backdrop-blur-md flex items-center justify-between px-10 z-40 transition-all">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-96 group focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-outline text-lg">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-outline-variant font-['Inter']" placeholder="Search analytics, audits, or reports..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-emerald-50 rounded-full transition-all flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="business">business</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-emerald-50 rounded-full transition-all relative flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-tertiary rounded-full"></span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<button class="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+                    Create Report
+                </button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="pt-28 pb-12 px-10">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-12">
+<div class="space-y-1">
+<h2 class="text-4xl font-extrabold font-headline tracking-tight text-on-surface">Reports &amp; Analytics</h2>
+<p class="text-on-surface-variant font-body">Real-time financial synthesis and performance tracking.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-high text-on-surface px-5 py-2.5 rounded-full text-sm font-medium flex items-center gap-2 hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-lg">picture_as_pdf</span>
+                        Export PDF
+                    </button>
+<button class="bg-surface-container-high text-on-surface px-5 py-2.5 rounded-full text-sm font-medium flex items-center gap-2 hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-lg">csv</span>
+                        Export CSV
+                    </button>
+<button class="bg-secondary text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+                        Filters
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Large Summary Widget (Hero Numbers) -->
+<div class="col-span-12 bg-surface-container-lowest p-8 rounded-[2rem] editorial-shadow flex items-center justify-between">
+<div class="flex gap-16">
+<div>
+<p class="text-[0.7rem] uppercase tracking-[0.1em] text-outline font-semibold mb-2">Total Managed Volume</p>
+<h3 class="text-5xl font-extrabold font-headline text-primary">$12.8M</h3>
+<p class="text-xs text-emerald-600 mt-2 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +14.2% from last month
+                            </p>
+</div>
+<div class="w-[1px] bg-outline-variant/20"></div>
+<div>
+<p class="text-[0.7rem] uppercase tracking-[0.1em] text-outline font-semibold mb-2">Efficiency Rating</p>
+<h3 class="text-5xl font-extrabold font-headline text-on-surface">98.4%</h3>
+<p class="text-xs text-emerald-600 mt-2 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">verified</span> Industry leading
+                            </p>
+</div>
+<div class="w-[1px] bg-outline-variant/20"></div>
+<div>
+<p class="text-[0.7rem] uppercase tracking-[0.1em] text-outline font-semibold mb-2">Discrepancy Rate</p>
+<h3 class="text-5xl font-extrabold font-headline text-tertiary">0.02%</h3>
+<p class="text-xs text-tertiary/70 mt-2 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">shield</span> Highly Secure
+                            </p>
+</div>
+</div>
+<div class="h-24 w-48 bg-surface-container-low rounded-2xl flex items-end justify-between px-6 pb-4">
+<div class="w-2 bg-primary/20 rounded-full h-8"></div>
+<div class="w-2 bg-primary/40 rounded-full h-12"></div>
+<div class="w-2 bg-primary/60 rounded-full h-10"></div>
+<div class="w-2 bg-primary rounded-full h-16"></div>
+<div class="w-2 bg-primary/30 rounded-full h-6"></div>
+</div>
+</div>
+<!-- Monthly Comparison (Bar Chart) -->
+<div class="col-span-8 bg-surface-container-lowest p-8 rounded-[2rem] editorial-shadow h-[400px] flex flex-col">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h4 class="text-xl font-bold font-headline">Reconciliation Performance</h4>
+<p class="text-sm text-on-surface-variant">Monthly match volume vs discrepancies</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-xs font-medium text-outline">Matched</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<span class="text-xs font-medium text-outline">Pending</span>
+</div>
+</div>
+</div>
+<div class="flex-1 flex items-end justify-between px-4 pb-2">
+<!-- Bar Groups -->
+<div class="flex flex-col items-center gap-3 w-12">
+<div class="w-full flex items-end justify-center gap-1 h-48">
+<div class="w-3 bg-primary/10 rounded-t-full h-[60%]"></div>
+<div class="w-3 bg-primary/80 rounded-t-full h-[90%]"></div>
+</div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-wider">Jan</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-12">
+<div class="w-full flex items-end justify-center gap-1 h-48">
+<div class="w-3 bg-primary/10 rounded-t-full h-[40%]"></div>
+<div class="w-3 bg-primary/80 rounded-t-full h-[70%]"></div>
+</div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-wider">Feb</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-12">
+<div class="w-full flex items-end justify-center gap-1 h-48">
+<div class="w-3 bg-primary/10 rounded-t-full h-[80%]"></div>
+<div class="w-3 bg-primary/80 rounded-t-full h-[95%]"></div>
+</div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-wider">Mar</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-12">
+<div class="w-full flex items-end justify-center gap-1 h-48">
+<div class="w-3 bg-primary/10 rounded-t-full h-[50%]"></div>
+<div class="w-3 bg-primary/80 rounded-t-full h-[85%]"></div>
+</div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-wider">Apr</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-12">
+<div class="w-full flex items-end justify-center gap-1 h-48">
+<div class="w-3 bg-primary/10 rounded-t-full h-[70%]"></div>
+<div class="w-3 bg-primary/80 rounded-t-full h-[100%]"></div>
+</div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-wider">May</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-12">
+<div class="w-full flex items-end justify-center gap-1 h-48">
+<div class="w-3 bg-primary/10 rounded-t-full h-[60%]"></div>
+<div class="w-3 bg-primary/80 rounded-t-full h-[90%]"></div>
+</div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-wider">Jun</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-12">
+<div class="w-full flex items-end justify-center gap-1 h-48">
+<div class="w-3 bg-primary/10 rounded-t-full h-[85%]"></div>
+<div class="w-3 bg-primary/80 rounded-t-full h-[98%]"></div>
+</div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-wider">Jul</span>
+</div>
+</div>
+</div>
+<!-- Revenue by Channel (Pie Chart) -->
+<div class="col-span-4 bg-surface-container-lowest p-8 rounded-[2rem] editorial-shadow h-[400px] flex flex-col">
+<h4 class="text-xl font-bold font-headline mb-1">Revenue by Channel</h4>
+<p class="text-sm text-on-surface-variant mb-8">Top performing platforms</p>
+<div class="flex-1 flex flex-col items-center justify-center">
+<div class="relative w-44 h-44 rounded-full border-[16px] border-emerald-50 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-[16px] border-primary border-r-transparent border-b-transparent -rotate-45"></div>
+<div class="absolute inset-0 rounded-full border-[16px] border-secondary border-l-transparent border-t-transparent rotate-12 opacity-40"></div>
+<div class="text-center">
+<p class="text-2xl font-extrabold font-headline">72%</p>
+<p class="text-[10px] text-outline font-bold uppercase">Direct</p>
+</div>
+</div>
+</div>
+<div class="mt-6 space-y-3">
+<div class="flex justify-between items-center text-sm">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-medium">Direct Transfer</span>
+</div>
+<span class="font-bold text-on-surface">$4.2M</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-medium">Card Payments</span>
+</div>
+<span class="font-bold text-on-surface text-opacity-70">$1.8M</span>
+</div>
+<div class="flex justify-between items-center text-sm text-outline">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+<span class="font-medium">Mobile Wallets</span>
+</div>
+<span class="font-bold">$0.6M</span>
+</div>
+</div>
+</div>
+<!-- Reconciliation Efficiency (Gauge) -->
+<div class="col-span-5 bg-surface-container-lowest p-8 rounded-[2rem] editorial-shadow">
+<div class="flex justify-between items-center mb-6">
+<h4 class="text-xl font-bold font-headline">Health Meter</h4>
+<span class="bg-emerald-50 text-primary px-3 py-1 rounded-full text-xs font-bold">OPTIMIZED</span>
+</div>
+<div class="relative pt-8 flex justify-center">
+<!-- Simple Gauge Representation -->
+<div class="w-64 h-32 rounded-t-full border-[20px] border-surface-container-low relative overflow-hidden">
+<div class="absolute inset-0 w-full h-full rounded-t-full border-[20px] border-primary border-b-0 origin-bottom rotate-[15deg]"></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-on-surface rounded-full z-10"></div>
+</div>
+<div class="absolute bottom-6 text-center">
+<p class="text-3xl font-extrabold font-headline">94.8</p>
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">Global Score</p>
+</div>
+</div>
+<div class="mt-10 grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4 rounded-2xl">
+<p class="text-[10px] font-bold text-outline uppercase mb-1">Response Time</p>
+<p class="text-lg font-bold text-on-surface">1.2s</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-2xl">
+<p class="text-[10px] font-bold text-outline uppercase mb-1">Uptime</p>
+<p class="text-lg font-bold text-on-surface">99.9%</p>
+</div>
+</div>
+</div>
+<!-- Data Narratives / Insights -->
+<div class="col-span-7 bg-primary-container text-on-primary-container p-8 rounded-[2rem] editorial-shadow relative overflow-hidden">
+<div class="relative z-10 flex flex-col h-full">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined">auto_awesome</span>
+<h4 class="text-lg font-bold font-headline">AI Insights Narrative</h4>
+</div>
+<p class="text-lg leading-relaxed font-medium mb-8 max-w-md">
+                            Your reconciliation efficiency has increased by <span class="underline decoration-2 underline-offset-4">8.4%</span> this quarter. We recommend consolidating your Treasury accounts to further reduce processing fees by an estimated <span class="font-bold text-white">$12k/mo.</span>
+</p>
+<div class="mt-auto flex items-center gap-4">
+<button class="bg-white text-primary px-6 py-3 rounded-full text-sm font-bold shadow-xl shadow-black/10 hover:bg-emerald-50 transition-all">
+                                Optimization Plan
+                            </button>
+<button class="text-white/80 text-sm font-semibold hover:text-white transition-all">
+                                Dismiss Insight
+                            </button>
+</div>
+</div>
+<!-- Background Decoration -->
+<div class="absolute -bottom-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+<div class="absolute top-10 right-10 opacity-20">
+<span class="material-symbols-outlined text-[160px]" style="font-variation-settings: 'wght' 100;">analytics</span>
+</div>
+</div>
+<!-- Recent Reconciliation Reports (Custom List) -->
+<div class="col-span-12 bg-surface-container-lowest p-8 rounded-[2rem] editorial-shadow">
+<div class="flex justify-between items-center mb-8">
+<h4 class="text-xl font-bold font-headline">Archived Analytics</h4>
+<button class="text-primary text-sm font-bold hover:underline">View All Records</button>
+</div>
+<div class="space-y-1">
+<!-- List Item 1 -->
+<div class="group flex items-center justify-between p-4 rounded-2xl hover:bg-surface-container-low transition-all cursor-pointer">
+<div class="flex items-center gap-6">
+<div class="w-1 h-10 bg-primary rounded-full"></div>
+<div>
+<h5 class="text-sm font-bold">Q2 Quarterly Audit Report</h5>
+<p class="text-[10px] text-outline font-medium">Generated Jul 15, 2023 • 1.2 MB</p>
+</div>
+</div>
+<div class="flex items-center gap-12">
+<div class="flex -space-x-2">
+<img alt="Avatar A" class="w-8 h-8 rounded-full border-2 border-surface-container-lowest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUHblT4x_8L-UdCwGCMFWhAjtbURe645W9Wd62oaqe5DmH1z8Lix_JCnC7SaxdcpCMCdGNyRA6Ekuj_Gu2R_LDg3rKDtC86L_mrIIXVC4uiukOXF6pDRz2fIJ15SdtPA-VgTEz7g37Y4ndI0nqATTwqSMY9I0_dMgIuQvVkqb0e16QY0RHkelishEOu25Wp4IzMK9ul_VlnRim0_gfX3NoPRtkbDw4L6HomCojhmp5t61MrImZ9w6wgsByFKnPvJF6aRqQtlErg2c"/>
+<img alt="Avatar B" class="w-8 h-8 rounded-full border-2 border-surface-container-lowest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL3ftpEWhYlRMS_S5S2HSsQ5Aevzv2GmHdU58E0c-ban5ftcd0hWTbvhyRh2Q1JLO0YHkU7f07YRD_NUnyZLJnX6auvsZL0XYuVGI8CDjCBLyd-oq6MlTpI_GL9YZalFnk_ilEm_7qbUn29RX6mMDbgT8x76uRvZIE7Gl1SnDXbcc70lGf8ID8s_503iOsT3j7utsynyAWNfzXbTtCjUiu85GMN3xlS6IFBc9LR55x5F1nPveXVPpB1eQd2Cfozr4RODcT9NVG3jI"/>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">download</span>
+</button>
+<button class="p-2 text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">share</span>
+</button>
+</div>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="group flex items-center justify-between p-4 rounded-2xl hover:bg-surface-container-low transition-all cursor-pointer">
+<div class="flex items-center gap-6">
+<div class="w-1 h-10 bg-primary rounded-full"></div>
+<div>
+<h5 class="text-sm font-bold">Monthly Reconciliation Summary - June</h5>
+<p class="text-[10px] text-outline font-medium">Generated Jun 30, 2023 • 840 KB</p>
+</div>
+</div>
+<div class="flex items-center gap-12">
+<div class="flex -space-x-2">
+<img alt="Avatar C" class="w-8 h-8 rounded-full border-2 border-surface-container-lowest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUyatDkkcssiyUxuSTvqWZygTPL8DCsNMVuAahJoD42_Uji4M5R-EDWISiYidl0CNw0K14xE0ugEZWANamIcMpziCo8hmXh74rn-HiLcbUMfP6APilFyXBs7qSHGF54TFXpJXjBGKJA404kePRLt2qkiR0kZA0cAJXIplbLA9KIZ6OIszwqxQQO9U6-Ape3RoCwMQrO-J2aqiIOIoItDpb5E9ltZLu21Cwtk3owHvYdvdaErhtxTYrvPkUyj6vQRdknzFBqEloFxc"/>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">download</span>
+</button>
+<button class="p-2 text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">share</span>
+</button>
+</div>
+</div>
+</div>
+<!-- List Item 3 (Pending State) -->
+<div class="group flex items-center justify-between p-4 rounded-2xl hover:bg-surface-container-low transition-all cursor-pointer">
+<div class="flex items-center gap-6">
+<div class="w-1 h-10 bg-tertiary rounded-full"></div>
+<div>
+<h5 class="text-sm font-bold">Tax Compliance Draft v2</h5>
+<p class="text-[10px] text-outline font-medium">Auto-saving • In Progress</p>
+</div>
+</div>
+<div class="flex items-center gap-12">
+<span class="text-xs font-bold text-tertiary px-3 py-1 bg-tertiary-fixed rounded-full">PENDING</span>
+<div class="flex gap-2">
+<button class="p-2 text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Hidden on Reports as per suppression rules, but adding subtle context button) -->
+<div class="fixed bottom-10 right-10 z-50">
+<button class="group flex items-center gap-2 bg-on-surface text-surface py-4 px-6 rounded-full shadow-2xl shadow-black/20 hover:scale-[1.05] active:scale-95 transition-all">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="text-sm font-bold max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 whitespace-nowrap">Ask Financial AI</span>
+</button>
+</div>
+</body></html>

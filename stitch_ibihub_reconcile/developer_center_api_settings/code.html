@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Developer &amp; API Center | Ibihub Reconcile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e8e8ea",
+                    "secondary-fixed-dim": "#76d6d5",
+                    "secondary-fixed": "#93f2f2",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#6fdba8",
+                    "primary-container": "#00855b",
+                    "tertiary-container": "#956e00",
+                    "error-container": "#ffdad6",
+                    "surface-bright": "#f9f9fb",
+                    "surface-variant": "#e2e2e4",
+                    "on-tertiary-fixed": "#261a00",
+                    "on-secondary-container": "#006e6e",
+                    "outline-variant": "#bdcac0",
+                    "primary": "#006947",
+                    "inverse-primary": "#6fdba8",
+                    "on-secondary": "#ffffff",
+                    "background": "#f9f9fb",
+                    "inverse-surface": "#2f3132",
+                    "tertiary-fixed-dim": "#fbbc00",
+                    "on-background": "#1a1c1d",
+                    "tertiary": "#765700",
+                    "primary-fixed": "#8bf8c3",
+                    "outline": "#6e7a72",
+                    "on-tertiary-fixed-variant": "#5c4300",
+                    "on-tertiary-container": "#fffbff",
+                    "on-primary-container": "#f5fff6",
+                    "secondary-container": "#90efef",
+                    "error": "#ba1a1a",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-dim": "#d9dadc",
+                    "surface-container-low": "#f3f3f5",
+                    "tertiary-fixed": "#ffdfa0",
+                    "on-surface-variant": "#3e4942",
+                    "on-surface": "#1a1c1d",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#005236",
+                    "on-primary": "#ffffff",
+                    "surface": "#f9f9fb",
+                    "surface-tint": "#006c49",
+                    "surface-container-highest": "#e2e2e4",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#eeeef0",
+                    "secondary": "#006a6a",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "on-primary-fixed": "#002113",
+                    "inverse-on-surface": "#f0f0f2",
+                    "on-secondary-fixed": "#002020"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .reconcile-ribbon-primary { border-left: 4px solid #006947; }
+        .reconcile-ribbon-pending { border-left: 4px solid #765700; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #bdcac0; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 flex flex-col h-full p-6 border-r-0 bg-slate-50 dark:bg-emerald-950 h-screen w-72 rounded-r-lg shadow-[20px_0_40px_rgba(0,0,0,0.02)] z-50 overflow-y-auto">
+<div class="mb-10 px-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">shield_person</span>
+</div>
+<div>
+<h2 class="text-lg font-black text-emerald-900 dark:text-emerald-50 font-headline leading-tight">The Sanctuary</h2>
+<p class="text-[10px] uppercase tracking-[0.1em] text-slate-500 font-bold">Enterprise ERP Suite</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-4 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl transition-all duration-300 ease-out translate-x-1 hover:translate-x-2 font-inter text-sm tracking-wide font-medium" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl transition-all duration-300 ease-out translate-x-1 hover:translate-x-2 font-inter text-sm tracking-wide font-medium" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span>Reconcile</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl transition-all duration-300 ease-out translate-x-1 hover:translate-x-2 font-inter text-sm tracking-wide font-medium" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span>Ledgers</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl transition-all duration-300 ease-out translate-x-1 hover:translate-x-2 font-inter text-sm tracking-wide font-medium" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span>Analytics</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl transition-all duration-300 ease-out translate-x-1 hover:translate-x-2 font-inter text-sm tracking-wide font-medium" href="#">
+<span class="material-symbols-outlined">corporate_fare</span>
+<span>Entities</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 bg-white dark:bg-emerald-800/40 text-emerald-900 dark:text-emerald-50 rounded-2xl shadow-sm font-semibold transition-all duration-300 ease-out translate-x-1 hover:translate-x-2 font-inter text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined">settings_suggest</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4 pt-6 border-t border-slate-100 dark:border-emerald-900/30">
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary py-3 px-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
+<span class="material-symbols-outlined">add</span>
+<span>Add Transaction</span>
+</button>
+<div class="space-y-1">
+<a class="flex items-center gap-4 px-4 py-2 text-slate-500 hover:text-primary text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">support</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-2 text-slate-500 hover:text-error text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-8 py-4 w-full sticky top-0 z-40 bg-white/80 dark:bg-emerald-950/80 backdrop-blur-2xl shadow-sm pl-80">
+<div class="flex items-center gap-8">
+<h1 class="text-2xl font-bold text-emerald-900 dark:text-emerald-50 font-headline tracking-tight">Developer Center</h1>
+<div class="hidden lg:flex items-center bg-surface-container-low px-4 py-2 rounded-full w-96 gap-3 group focus-within:bg-white focus-within:shadow-sm transition-all">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-medium" placeholder="Search documentation..." type="text"/>
+<span class="text-[10px] font-bold text-outline border border-outline/30 px-1.5 py-0.5 rounded">⌘K</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-emerald-50/50 rounded-full transition-colors cursor-pointer active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications_active</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-emerald-50/50 rounded-full transition-colors cursor-pointer active:scale-95 duration-200">
+<span class="material-symbols-outlined">apps</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/30 mx-2"></div>
+<button class="text-emerald-800 dark:text-emerald-400 font-bold hover:bg-emerald-50/50 px-4 py-2 rounded-xl transition-all active:scale-95">Audit Trail</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img alt="Financial Officer Profile" class="w-full h-full object-cover" data-alt="Professional portrait of a financial officer with confident expression in a bright modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhCXcQ9nPxY1Z-eAvweRRISQGdUwU-C40r73I3ckJHbG6-lk_p2ce_d0sAEBTPk8drgu2a0wJ8nkYH1NnEvgqz4QXtyG6tZ_CJ29NHHxxAx0-VWZJA3H9j_pmr5d2ZlXaZhRTFHL26xNQSf9rgoc6FefiJrYGZ-1uf27CjJfQqmeXFa6CN14uCAYW4_Hi3aEeC6bRf9AcI6mMehBY28h6Ab3XUcrXPpMeWbRpqaTyN2L3X3TiQ7FW-1euqdCWCECUTBTEBZAcIkZM"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pl-80 pr-8 pt-8 pb-12 flex gap-8">
+<!-- Left Content Area -->
+<div class="flex-1 space-y-8 max-w-5xl">
+<!-- Header Section -->
+<section class="space-y-2">
+<div class="flex items-center gap-2 text-primary text-sm font-bold tracking-wider uppercase">
+<span class="material-symbols-outlined text-sm">api</span>
+<span>API Gateway v2.4</span>
+</div>
+<h2 class="text-4xl font-headline font-extrabold text-on-surface tracking-tight">Build the future of reconciliation.</h2>
+<p class="text-on-surface-variant text-lg max-w-2xl leading-relaxed">Access enterprise-grade financial ledgering and automated reconciliation engines through our robust, RESTful API architecture.</p>
+</section>
+<!-- API Keys Section (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Primary Key Card -->
+<div class="md:col-span-2 glass-panel p-8 rounded-lg shadow-sm reconcile-ribbon-primary relative overflow-hidden group">
+<div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-700"></div>
+<div class="relative z-10 space-y-6">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<h3 class="text-xl font-headline font-bold text-on-surface">Secret API Key</h3>
+<p class="text-sm text-on-surface-variant">Used for server-side authentication</p>
+</div>
+<span class="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">Active</span>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-low p-4 rounded-2xl border border-outline-variant/10">
+<div class="flex-1 font-mono text-sm tracking-tight text-on-surface-variant flex gap-2 overflow-hidden">
+<span class="text-primary font-bold">sk_live_</span>
+<span>••••••••••••••••••••••••••••••••</span>
+<span class="opacity-50 text-xs self-center ml-auto">Last used 2m ago</span>
+</div>
+<button class="p-2 hover:bg-primary-container/10 text-primary rounded-xl transition-all active:scale-90">
+<span class="material-symbols-outlined">content_copy</span>
+</button>
+</div>
+<div class="flex gap-4 pt-2">
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold text-sm transition-all hover:shadow-lg active:scale-95">Roll Secret Key</button>
+<button class="text-on-surface-variant hover:text-primary font-semibold text-sm transition-colors flex items-center gap-2">
+                                View Restrictions <span class="material-symbols-outlined text-sm">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Usage Stats Card -->
+<div class="glass-panel p-8 rounded-lg shadow-sm flex flex-col justify-between">
+<div class="space-y-1">
+<h3 class="text-sm font-bold text-on-surface-variant uppercase tracking-wider">Daily Request Quota</h3>
+<div class="text-3xl font-headline font-bold text-on-surface">12,402 <span class="text-sm font-normal text-outline">/ 50k</span></div>
+</div>
+<div class="space-y-3">
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-1/4 rounded-full"></div>
+</div>
+<p class="text-xs text-on-surface-variant leading-tight">You are currently using 24.8% of your production capacity.</p>
+</div>
+</div>
+</section>
+<!-- Webhooks Section -->
+<section class="glass-panel p-8 rounded-lg shadow-sm space-y-6">
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<h3 class="text-2xl font-headline font-bold text-on-surface">Webhooks</h3>
+<p class="text-on-surface-variant">Real-time event notifications for automated workflows.</p>
+</div>
+<button class="bg-surface-container-high text-on-surface font-bold px-6 py-2.5 rounded-full text-sm hover:bg-surface-variant transition-colors flex items-center gap-2 active:scale-95">
+<span class="material-symbols-outlined text-sm">add_link</span>
+                        Add Endpoint
+                    </button>
+</div>
+<div class="space-y-px overflow-hidden rounded-2xl border border-outline-variant/10">
+<!-- Webhook Item -->
+<div class="bg-white hover:bg-surface-container-low transition-colors p-5 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-secondary-container/30 text-secondary rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lan</span>
+</div>
+<div>
+<p class="font-mono text-sm font-semibold text-on-surface">https://api.acmecorp.com/hooks/reconcile</p>
+<p class="text-xs text-on-surface-variant">Events: <span class="bg-surface-container px-1.5 py-0.5 rounded text-[10px]">transaction.matched</span>, <span class="bg-surface-container px-1.5 py-0.5 rounded text-[10px]">ledger.updated</span></p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right">
+<p class="text-[10px] font-bold text-outline uppercase tracking-tighter">Latency</p>
+<p class="text-sm font-semibold text-primary">42ms</p>
+</div>
+<button class="text-outline hover:text-on-surface transition-colors p-2 rounded-lg">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+<!-- Webhook Item 2 -->
+<div class="bg-white hover:bg-surface-container-low transition-colors p-5 flex items-center justify-between group border-t border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-tertiary-container/10 text-tertiary rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<p class="font-mono text-sm font-semibold text-on-surface">https://stage-hooks.internal.dev/v1</p>
+<p class="text-xs text-on-surface-variant">Events: <span class="bg-surface-container px-1.5 py-0.5 rounded text-[10px]">all_events</span></p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right">
+<p class="text-[10px] font-bold text-outline uppercase tracking-tighter">Status</p>
+<p class="text-sm font-semibold text-tertiary">Failing (502)</p>
+</div>
+<button class="text-outline hover:text-on-surface transition-colors p-2 rounded-lg">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Live Logs (Code Snippet Style) -->
+<section class="glass-panel rounded-lg shadow-sm overflow-hidden flex flex-col h-[400px]">
+<div class="bg-surface-container-highest/50 px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+<h3 class="text-sm font-bold text-on-surface uppercase tracking-widest">Live API Stream</h3>
+</div>
+<div class="flex items-center gap-3">
+<select class="text-xs font-bold bg-transparent border-none focus:ring-0 py-0 cursor-pointer text-on-surface-variant">
+<option>All Methods</option>
+<option>POST only</option>
+<option>GET only</option>
+</select>
+<button class="p-1.5 hover:bg-white rounded-lg text-outline-variant hover:text-on-surface transition-all">
+<span class="material-symbols-outlined text-sm">pause</span>
+</button>
+</div>
+</div>
+<div class="flex-1 bg-[#1a1c1d] p-6 font-mono text-xs overflow-y-auto space-y-4">
+<!-- Log Entry 1 -->
+<div class="flex gap-4 group">
+<span class="text-[#6fdba8] font-bold">200</span>
+<span class="text-[#bdcac0]">POST</span>
+<span class="text-white">/v1/reconcile/match</span>
+<span class="text-[#bdcac0] opacity-40 ml-auto">14:22:01.442</span>
+</div>
+<div class="pl-14 text-[#93d6d5] opacity-80 border-l border-white/10 ml-2">
+                        { "transaction_id": "tx_9921", "strategy": "exact_match", "status": "success" }
+                    </div>
+<!-- Log Entry 2 -->
+<div class="flex gap-4 group">
+<span class="text-[#6fdba8] font-bold">200</span>
+<span class="text-[#bdcac0]">GET</span>
+<span class="text-white">/v1/ledger/balance</span>
+<span class="text-[#bdcac0] opacity-40 ml-auto">14:21:58.109</span>
+</div>
+<!-- Log Entry 3 -->
+<div class="flex gap-4 group">
+<span class="text-[#fbbc00] font-bold">404</span>
+<span class="text-[#bdcac0]">POST</span>
+<span class="text-[#ffdad6]">/v1/unknown_endpoint</span>
+<span class="text-[#bdcac0] opacity-40 ml-auto">14:21:52.001</span>
+</div>
+<div class="pl-14 text-[#ffdad6] opacity-60 border-l border-error/30 ml-2">
+                        { "error": "endpoint_not_found", "request_id": "req_88f2" }
+                    </div>
+<!-- Log Entry 4 -->
+<div class="flex gap-4 group">
+<span class="text-[#6fdba8] font-bold">201</span>
+<span class="text-[#bdcac0]">POST</span>
+<span class="text-white">/v1/entities/create</span>
+<span class="text-[#bdcac0] opacity-40 ml-auto">14:21:44.982</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Sidebar Navigation (Right) -->
+<aside class="w-72 sticky top-28 h-fit space-y-8">
+<div class="space-y-4">
+<h4 class="text-[10px] font-bold text-outline uppercase tracking-[0.2em] px-4">Documentation</h4>
+<nav class="space-y-1">
+<a class="group flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm border border-outline-variant/5 hover:border-primary/20 transition-all" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-xl">auto_stories</span>
+<span class="text-sm font-bold text-on-surface">Quickstart Guide</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<a class="group flex items-center justify-between p-4 hover:bg-surface-container-low rounded-2xl transition-all" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline text-xl">terminal</span>
+<span class="text-sm font-medium text-on-surface-variant">API Reference</span>
+</div>
+</a>
+<a class="group flex items-center justify-between p-4 hover:bg-surface-container-low rounded-2xl transition-all" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline text-xl">extension</span>
+<span class="text-sm font-medium text-on-surface-variant">SDKs &amp; Libraries</span>
+</div>
+</a>
+<a class="group flex items-center justify-between p-4 hover:bg-surface-container-low rounded-2xl transition-all" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline text-xl">hub</span>
+<span class="text-sm font-medium text-on-surface-variant">Core Integration</span>
+</div>
+</a>
+</nav>
+</div>
+<div class="glass-panel p-6 rounded-lg space-y-4 shadow-sm bg-gradient-to-br from-primary-container/10 to-transparent">
+<div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+</div>
+<div class="space-y-1">
+<h5 class="font-headline font-bold text-on-surface">Technical Support</h5>
+<p class="text-xs text-on-surface-variant leading-relaxed">Need help with your integration? Our engineers are available 24/7 for Tier 3 accounts.</p>
+</div>
+<button class="w-full bg-white text-on-surface border border-outline-variant/20 py-2.5 rounded-full text-xs font-bold hover:shadow-md transition-all active:scale-95">Open Ticket</button>
+</div>
+<div class="px-4 space-y-4">
+<div class="flex items-center justify-between text-xs">
+<span class="text-outline font-medium">Service Status</span>
+<span class="text-primary font-bold flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                        Operational
+                    </span>
+</div>
+<img alt="Service Performance Graph" class="w-full h-24 object-cover rounded-xl grayscale opacity-50" data-alt="Abstract data visualization chart showing consistent uptime performance with elegant dark green lines on a soft gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsaEpHRr07RAESsdYANmzxyX8WPr18yxvpk_YPgNwr4ZOp6HCS3TglBgNRjpLahenuLKw8N1qj0v2UYkzFj_au4qLAUjCAQN-5x6egCNwF32Mit-46zqT83LpFEk7tHG5Q4jMm4ZBlljthDHO9Z_StO00BAEswIFmqY15E66Hwn52Hk4zicJkC_nUI4cFxrBcDOtbOpS4zREpo__d1uL8BC2C7uWpOUzC09vCzwtU-EZ8043yNm5ov1qgSh9V-46uWo1Snwm8erOI"/>
+</div>
+</aside>
+</main>
+</body></html>

@@ -1,0 +1,269 @@
+# Gorfisca - SaaS Comptabilité OHADA
+# Fichier .gitignore pour Django + Next.js + Python + Node.js
+
+# ==========================================
+# ENVIRONNEMENT ET CONFIGURATION
+# ==========================================
+# Variables d'environnement
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Fichiers de configuration sensibles
+config/settings/local.py
+config/settings/production.py
+config/settings/staging.py
+
+# ==========================================
+# PYTHON / DJANGO
+# ==========================================
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django spécifique
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+coverage/
+.coverage
+.pytest_cache/
+htmlcov/
+
+# ==========================================
+# NODE.JS / NEXT.JS (Frontend)
+# ==========================================
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# ==========================================
+# IDE ET EDITEURS
+# ==========================================
+# VSCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# PyCharm
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ==========================================
+# SYSTÈME D'EXPLOITATION
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ==========================================
+# BACKUP ET TEMP
+# ==========================================
+*.bak
+*.backup
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ==========================================
+# LOGS ET RAPPORTS
+# ==========================================
+*.log
+logs/
+*.out
+*.err
+
+# ==========================================
+# BASES DE DONNÉES
+# ==========================================
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# PostgreSQL
+*.dump
+
+# ==========================================
+# MÉDIA FICHIERS
+# ==========================================
+# Fichiers uploadés
+media/*
+uploads/
+files/
+documents/
+invoices/
+receipts/
+
+# ==========================================
+# SÉCURITÉ
+# ==========================================
+# Clés API et tokens
+*.pem
+*.key
+*.crt
+*.p12
+api_keys.txt
+secrets.txt
+
+# ==========================================
+# DOCKER
+# ==========================================
+.dockerignore
+docker-compose.override.yml
+
+# ==========================================
+# PROJET SPÉCIFIQUE
+# ==========================================
+# Documentation générée
+docs/_build/
+site/
+
+# Tests et coverage
+.coverage
+htmlcov/
+.pytest_cache/
+test-results/
+junit.xml
+
+# Analytics
+analytics/
+reports/
+
+# Cache de l'IA
+ai_cache/
+model_cache/
+
+# ==========================================
+# FICHIiers À IGNORER SPÉCIFIQUEMENT
+# ==========================================
+# Mais garder les fichiers de configuration importants
+!requirements.txt
+!requirements/*.txt
+!package.json
+!package-lock.json
+!yarn.lock
+!README.md
+!.gitignore
+!Dockerfile
+!docker-compose.yml
+!.env.example
+!next.config.js
+!tailwind.config.js
+!tsconfig.json

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Treasury - Ibihub Reconcile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f9f9fb",
+                        "on-tertiary-container": "#fffbff",
+                        "on-surface-variant": "#3e4942",
+                        "surface-container-highest": "#e2e2e4",
+                        "surface-bright": "#f9f9fb",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "primary": "#006947",
+                        "error": "#ba1a1a",
+                        "surface-container": "#eeeef0",
+                        "outline-variant": "#bdcac0",
+                        "on-secondary-fixed": "#002020",
+                        "surface-tint": "#006c49",
+                        "surface-container-high": "#e8e8ea",
+                        "on-surface": "#1a1c1d",
+                        "on-secondary-container": "#006e6e",
+                        "secondary-container": "#90efef",
+                        "tertiary-fixed-dim": "#fbbc00",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#00855b",
+                        "tertiary-fixed": "#ffdfa0",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#8bf8c3",
+                        "primary-fixed-dim": "#6fdba8",
+                        "inverse-primary": "#6fdba8",
+                        "background": "#f9f9fb",
+                        "on-tertiary-fixed": "#261a00",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2f3132",
+                        "surface-container-low": "#f3f3f5",
+                        "tertiary": "#765700",
+                        "surface-variant": "#e2e2e4",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1a1c1d",
+                        "on-primary-fixed": "#002113",
+                        "on-tertiary-fixed-variant": "#5c4300",
+                        "error-container": "#ffdad6",
+                        "secondary": "#006a6a",
+                        "on-primary-fixed-variant": "#005236",
+                        "outline": "#6e7a72",
+                        "surface-dim": "#d9dadc",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#956e00",
+                        "on-primary-container": "#f5fff6",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#93f2f2",
+                        "inverse-on-surface": "#f0f0f2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9fb; color: #1a1c1d; }
+        h1, h2, h3, .hero-number { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface selection:bg-primary-fixed">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-emerald-950 flex flex-col p-6 gap-2 shadow-2xl shadow-emerald-900/20 z-50 font-['Manrope'] tracking-tight">
+<div class="flex items-center gap-3 mb-10 px-2">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<div class="text-xl font-bold text-white tracking-wide">Ibihub Reconcile</div>
+<div class="text-[10px] text-emerald-400/60 uppercase tracking-[0.2em]">Financial Sanctuary</div>
+</div>
+</div>
+<nav class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="text-sm font-medium">Sales</span>
+</a>
+<!-- Active Tab: Treasury -->
+<a class="flex items-center gap-3 px-4 py-3 bg-emerald-700/40 text-emerald-50 font-semibold rounded-xl translate-x-1 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="text-sm font-medium">Treasury</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-sm font-medium">Accounting</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span class="text-sm font-medium">Reconciliation</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="text-sm font-medium">Reports</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-emerald-900/50">
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-100/60 hover:text-emerald-50 hover:bg-emerald-800/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-slate-50/80 backdrop-blur-md z-40 flex items-center justify-between px-8 font-['Inter'] font-medium">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-96 group transition-all focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:bg-surface-container-lowest">
+<span class="material-symbols-outlined text-slate-400 text-lg mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-400" placeholder="Search transactions, wallets..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="w-10 h-10 flex items-center justify-center text-slate-500 hover:bg-emerald-50 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="business">business</span>
+</button>
+<button class="relative w-10 h-10 flex items-center justify-center text-slate-500 hover:bg-emerald-50 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-tertiary rounded-full border-2 border-slate-50"></span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+<div class="text-right hidden sm:block">
+<div class="text-xs font-bold text-on-surface leading-tight">M. Koffi</div>
+<div class="text-[10px] text-slate-500 uppercase tracking-wider">Treasury Lead</div>
+</div>
+<img alt="User Profile Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500/10" data-alt="portrait of a professional West African businessman in a modern office environment with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3H_335QjusRK-Oxan1u4ZVb1NUAvdDDYgoo4ERGUj4VyLVd_4BsdA1mewwqpx7O-EBiEJn82DgDhRY0pm-KuJ3dYWPNIV-QQeEbOuTkDsKzQsa3hR1-LXDArOkXFr0-ZeY7flsHuIZ7QuAcleBr3-962Fe6dAmPhRw-cskP4CHbEcSES_Kd0Jt6ar0H5L5PAspyMrw1C9hfSRLRa2ZFw90L4SOhgxYnYoX-0b-b7WKkVQo5UECSo_PscF1o-hV9kULWkg-_udoPQ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen p-8 lg:p-12 space-y-12 max-w-[1600px] mx-auto">
+<!-- Header & Primary Metric -->
+<section class="flex flex-col md:flex-row justify-between items-end gap-8">
+<div class="space-y-2">
+<h1 class="text-headline-sm font-headline text-on-surface font-bold text-2xl tracking-tight">Treasury Overview</h1>
+<p class="text-on-surface-variant/70 text-sm font-body">Real-time liquidity monitoring and cash flow narrative.</p>
+</div>
+<div class="text-right">
+<span class="text-label-md text-on-surface-variant/60 uppercase tracking-[0.1em] font-medium block mb-1">Total Available Cash</span>
+<div class="text-5xl lg:text-6xl font-headline font-extrabold text-primary flex items-baseline gap-2">
+<span class="text-3xl font-bold opacity-40">CFA</span> 14,290,000
+                </div>
+</div>
+</section>
+<!-- Main Chart Section: Editorial Precision -->
+<section class="relative bg-surface-container-low rounded-xl p-8 overflow-hidden min-h-[400px]">
+<div class="flex justify-between items-center mb-10 relative z-10">
+<div>
+<h3 class="text-xl font-headline font-bold text-on-surface">Cash Flow Projection</h3>
+<p class="text-sm text-on-surface-variant">Last 30 days vs Forecast</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-xs font-medium text-on-surface-variant">Inflow</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="text-xs font-medium text-on-surface-variant">Outflow</span>
+</div>
+</div>
+</div>
+<!-- Abstract visualization of a chart -->
+<div class="absolute inset-x-8 bottom-8 h-64 flex items-end justify-between gap-4">
+<!-- Bars or Area Simulation -->
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[60%] transition-all hover:bg-primary/20 cursor-pointer group relative">
+<div class="absolute inset-x-0 bottom-0 bg-primary/40 h-[70%] rounded-t-lg"></div>
+<div class="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded-md whitespace-nowrap">Mar 01: +1.2M</div>
+</div>
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[80%] transition-all hover:bg-primary/20 cursor-pointer group relative">
+<div class="absolute inset-x-0 bottom-0 bg-primary/40 h-[65%] rounded-t-lg"></div>
+</div>
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[40%] transition-all hover:bg-primary/20 cursor-pointer group relative">
+<div class="absolute inset-x-0 bottom-0 bg-secondary/30 h-[90%] rounded-t-lg"></div>
+</div>
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[95%] transition-all hover:bg-primary/20 cursor-pointer group relative">
+<div class="absolute inset-x-0 bottom-0 bg-primary/40 h-[80%] rounded-t-lg"></div>
+</div>
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[70%] transition-all hover:bg-primary/20 cursor-pointer group relative">
+<div class="absolute inset-x-0 bottom-0 bg-primary/40 h-[45%] rounded-t-lg"></div>
+</div>
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[55%] transition-all hover:bg-primary/20 cursor-pointer group relative">
+<div class="absolute inset-x-0 bottom-0 bg-secondary/30 h-[70%] rounded-t-lg"></div>
+</div>
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[85%] transition-all hover:bg-primary/20 cursor-pointer group relative">
+<div class="absolute inset-x-0 bottom-0 bg-primary/40 h-[90%] rounded-t-lg"></div>
+</div>
+<div class="flex-1 bg-primary/10 rounded-t-lg h-[60%] transition-all hover:bg-primary/20 cursor-pointer group relative">
+<div class="absolute inset-x-0 bottom-0 bg-primary/40 h-[75%] rounded-t-lg"></div>
+</div>
+</div>
+</section>
+<!-- Bento Grid for Wallets -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Wallet 1: MTN -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm group hover:shadow-xl hover:shadow-emerald-900/5 transition-all">
+<div class="flex justify-between items-start mb-6">
+<div class="w-12 h-12 rounded-xl bg-[#FFCC00]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#FFCC00]" data-icon="phone_iphone">phone_iphone</span>
+</div>
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded-full uppercase">Matched</span>
+</div>
+<h4 class="text-sm font-label text-on-surface-variant font-medium">MTN MoMo</h4>
+<div class="text-2xl font-headline font-bold text-on-surface mt-1">4,500,200</div>
+<div class="mt-4 pt-4 border-t border-surface-container flex justify-between items-center text-[11px]">
+<span class="text-on-surface-variant/60">Updated 2m ago</span>
+<span class="text-emerald-600 flex items-center gap-0.5"><span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span> 12%</span>
+</div>
+</div>
+<!-- Wallet 2: Orange -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm group hover:shadow-xl hover:shadow-emerald-900/5 transition-all">
+<div class="flex justify-between items-start mb-6">
+<div class="w-12 h-12 rounded-xl bg-[#FF6600]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#FF6600]" data-icon="tap_and_play">tap_and_play</span>
+</div>
+<span class="text-[10px] font-bold text-tertiary bg-tertiary/10 px-2 py-1 rounded-full uppercase">Pending</span>
+</div>
+<h4 class="text-sm font-label text-on-surface-variant font-medium">Orange Money</h4>
+<div class="text-2xl font-headline font-bold text-on-surface mt-1">2,840,000</div>
+<div class="mt-4 pt-4 border-t border-surface-container flex justify-between items-center text-[11px]">
+<span class="text-on-surface-variant/60">Updated 1h ago</span>
+<span class="text-emerald-600 flex items-center gap-0.5"><span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span> 4%</span>
+</div>
+</div>
+<!-- Wallet 3: Flooz -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm group hover:shadow-xl hover:shadow-emerald-900/5 transition-all">
+<div class="flex justify-between items-start mb-6">
+<div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded-full uppercase">Matched</span>
+</div>
+<h4 class="text-sm font-label text-on-surface-variant font-medium">Flooz Moov</h4>
+<div class="text-2xl font-headline font-bold text-on-surface mt-1">1,950,500</div>
+<div class="mt-4 pt-4 border-t border-surface-container flex justify-between items-center text-[11px]">
+<span class="text-on-surface-variant/60">Updated 5m ago</span>
+<span class="text-error flex items-center gap-0.5"><span class="material-symbols-outlined text-xs" data-icon="trending_down">trending_down</span> 2%</span>
+</div>
+</div>
+<!-- Wallet 4: Bank -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm group hover:shadow-xl hover:shadow-emerald-900/5 transition-all border-l-4 border-primary">
+<div class="flex justify-between items-start mb-6">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="material-symbols-outlined text-slate-300" data-icon="more_horiz">more_horiz</span>
+</div>
+<h4 class="text-sm font-label text-on-surface-variant font-medium">Ecobank Corporate</h4>
+<div class="text-2xl font-headline font-bold text-on-surface mt-1">4,999,300</div>
+<div class="mt-4 pt-4 border-t border-surface-container flex justify-between items-center text-[11px]">
+<span class="text-on-surface-variant/60">Main Settlement Account</span>
+</div>
+</div>
+</section>
+<!-- Asymmetric Section: Obligations & Inflows -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Upcoming Obligations (Larger Column) -->
+<div class="lg:col-span-2 space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-xl font-headline font-bold text-on-surface">Upcoming Obligations</h3>
+<button class="text-sm font-medium text-primary hover:underline">View All Schedule</button>
+</div>
+<div class="space-y-4">
+<!-- Obligation Item 1 -->
+<div class="group flex items-center gap-6 p-4 rounded-lg bg-surface-container-low hover:bg-surface-container-lowest transition-colors relative overflow-hidden">
+<div class="w-1 h-full absolute left-0 top-0 bg-tertiary"></div> <!-- Reconcile Ribbon -->
+<div class="w-14 h-14 rounded-full bg-tertiary/10 flex flex-col items-center justify-center text-tertiary">
+<span class="text-xs font-bold leading-tight">OCT</span>
+<span class="text-lg font-bold leading-tight">24</span>
+</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold text-on-surface">Vendor Settlement: Azure Logistics</h5>
+<p class="text-xs text-on-surface-variant">Scheduled Bank Transfer</p>
+</div>
+<div class="text-right">
+<div class="text-base font-bold text-on-surface">2,500,000 CFA</div>
+<span class="text-[10px] font-bold text-tertiary uppercase">High Priority</span>
+</div>
+<button class="material-symbols-outlined text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" data-icon="arrow_forward_ios">arrow_forward_ios</button>
+</div>
+<!-- Obligation Item 2 -->
+<div class="group flex items-center gap-6 p-4 rounded-lg bg-surface-container-low hover:bg-surface-container-lowest transition-colors relative overflow-hidden">
+<div class="w-1 h-full absolute left-0 top-0 bg-primary"></div>
+<div class="w-14 h-14 rounded-full bg-primary/10 flex flex-col items-center justify-center text-primary">
+<span class="text-xs font-bold leading-tight">OCT</span>
+<span class="text-lg font-bold leading-tight">28</span>
+</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold text-on-surface">Office Lease Renewal</h5>
+<p class="text-xs text-on-surface-variant">Automatic Debit - Zenith Tower</p>
+</div>
+<div class="text-right">
+<div class="text-base font-bold text-on-surface">1,200,000 CFA</div>
+<span class="text-[10px] font-bold text-primary uppercase">Confirmed</span>
+</div>
+<button class="material-symbols-outlined text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" data-icon="arrow_forward_ios">arrow_forward_ios</button>
+</div>
+<!-- Obligation Item 3 -->
+<div class="group flex items-center gap-6 p-4 rounded-lg bg-surface-container-low hover:bg-surface-container-lowest transition-colors relative overflow-hidden">
+<div class="w-1 h-full absolute left-0 top-0 bg-slate-300"></div>
+<div class="w-14 h-14 rounded-full bg-slate-100 flex flex-col items-center justify-center text-slate-400">
+<span class="text-xs font-bold leading-tight">NOV</span>
+<span class="text-lg font-bold leading-tight">02</span>
+</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold text-on-surface">Monthly Payroll Disbursement</h5>
+<p class="text-xs text-on-surface-variant">Batch Process (84 Employees)</p>
+</div>
+<div class="text-right">
+<div class="text-base font-bold text-on-surface">8,450,000 CFA</div>
+<span class="text-[10px] font-bold text-on-surface-variant/40 uppercase">Draft</span>
+</div>
+<button class="material-symbols-outlined text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" data-icon="arrow_forward_ios">arrow_forward_ios</button>
+</div>
+</div>
+</div>
+<!-- Expected Inflows (Side Panel) -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-xl font-headline font-bold text-on-surface">Expected Inflows</h3>
+</div>
+<div class="bg-secondary/5 rounded-xl p-6 border border-secondary/10 space-y-6">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-secondary text-white flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" data-icon="call_received">call_received</span>
+</div>
+<div>
+<div class="text-xs text-secondary font-bold uppercase tracking-wider">Projected Revenue</div>
+<div class="text-2xl font-headline font-extrabold text-on-surface">5,200,000</div>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-relaxed">Based on 14 pending invoice reconciliations from retail outlets.</p>
+</div>
+</div>
+<div class="space-y-4 pt-4 border-t border-secondary/10">
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant">Direct Deposits</span>
+<span class="text-xs font-bold text-on-surface">1,800,000</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant">Mobile Collections</span>
+<span class="text-xs font-bold text-on-surface">3,400,000</span>
+</div>
+</div>
+<button class="w-full py-3 bg-secondary text-white rounded-lg text-sm font-bold hover:bg-secondary/90 transition-all flex items-center justify-center gap-2">
+                        Accelerate Inflows <span class="material-symbols-outlined text-sm" data-icon="bolt">bolt</span>
+</button>
+</div>
+<!-- Glassmorphic Promo/Insight -->
+<div class="relative rounded-lg overflow-hidden h-40 group cursor-pointer">
+<img alt="Financial Insight Background" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="abstract close-up of high-quality architectural glass with emerald and teal reflections in soft focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEtsGJO6rJ5bTE2pRz7XnBAbAPRLWdFQJW3f9PkqJhLnn-4ZPKFe9n_npWAigFmIu--Tn0Qg0IBgRNYFE1uXrTVZd6pMTX0XVpsPvyk6P34kN2ez9EdYfSPk4wxSsiCGjDwnkczNpj16QG0rIxvN7mZphsBOAZBXJDAkSAZsTQwB3dAhxOme06brgmRa24KC26r8DipCDSOivhof17GSP_GYGSsxzq70F5NVSBTpa4hnf19LdYneSzfD3X3Zq2L_ipdqffb7c1A_o"/>
+<div class="absolute inset-0 bg-primary/80 backdrop-blur-[2px] p-6 flex flex-col justify-end">
+<div class="text-white text-xs font-bold uppercase mb-1">Treasury Insight</div>
+<h4 class="text-white font-headline font-bold text-sm leading-snug">Liquidity is 14% higher than last quarter. Optimize interest earnings?</h4>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button: Suppressed for Treasury Details but keeping for Primary Action if needed per "Book a Walk" logic fallback? 
+         Instruction says: Suppress on Detail and Transactional. This is a primary dashboard for Treasury, so we can keep one primary CTA for "New Transaction". 
+    -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-2xl shadow-primary/40 flex items-center justify-center hover:scale-105 transition-all z-50">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</body></html>

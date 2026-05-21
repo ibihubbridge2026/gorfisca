@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e8e8ea",
+                    "secondary-fixed-dim": "#76d6d5",
+                    "secondary-fixed": "#93f2f2",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#6fdba8",
+                    "primary-container": "#00855b",
+                    "tertiary-container": "#956e00",
+                    "error-container": "#ffdad6",
+                    "surface-bright": "#f9f9fb",
+                    "surface-variant": "#e2e2e4",
+                    "on-tertiary-fixed": "#261a00",
+                    "on-secondary-container": "#006e6e",
+                    "outline-variant": "#bdcac0",
+                    "primary": "#006947",
+                    "inverse-primary": "#6fdba8",
+                    "on-secondary": "#ffffff",
+                    "background": "#f9f9fb",
+                    "inverse-surface": "#2f3132",
+                    "tertiary-fixed-dim": "#fbbc00",
+                    "on-background": "#1a1c1d",
+                    "tertiary": "#765700",
+                    "primary-fixed": "#8bf8c3",
+                    "outline": "#6e7a72",
+                    "on-tertiary-fixed-variant": "#5c4300",
+                    "on-tertiary-container": "#fffbff",
+                    "on-primary-container": "#f5fff6",
+                    "secondary-container": "#90efef",
+                    "error": "#ba1a1a",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-dim": "#d9dadc",
+                    "surface-container-low": "#f3f3f5",
+                    "tertiary-fixed": "#ffdfa0",
+                    "on-surface-variant": "#3e4942",
+                    "on-surface": "#1a1c1d",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#005236",
+                    "on-primary": "#ffffff",
+                    "surface": "#f9f9fb",
+                    "surface-tint": "#006c49",
+                    "surface-container-highest": "#e2e2e4",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#eeeef0",
+                    "secondary": "#006a6a",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "on-primary-fixed": "#002113",
+                    "inverse-on-surface": "#f0f0f2",
+                    "on-secondary-fixed": "#002020"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e2e4; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 flex flex-col h-full p-6 bg-slate-50 dark:bg-emerald-950 h-screen w-72 rounded-r-[24px] shadow-[20px_0_40px_rgba(0,0,0,0.02)] z-50">
+<div class="mb-10 px-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">corporate_fare</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-emerald-900 dark:text-emerald-50 font-manrope">The Sanctuary</h1>
+<p class="text-[10px] uppercase tracking-[0.1em] text-slate-500 font-bold">Enterprise ERP Suite</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-medium font-inter text-sm tracking-wide">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-medium font-inter text-sm tracking-wide">
+<span class="material-symbols-outlined">account_balance</span>
+<span>Reconcile</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-medium font-inter text-sm tracking-wide">
+<span class="material-symbols-outlined">menu_book</span>
+<span>Ledgers</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-medium font-inter text-sm tracking-wide">
+<span class="material-symbols-outlined">query_stats</span>
+<span>Analytics</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-medium font-inter text-sm tracking-wide">
+<span class="material-symbols-outlined">corporate_fare</span>
+<span>Entities</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-medium font-inter text-sm tracking-wide">
+<span class="material-symbols-outlined">settings_suggest</span>
+<span>Settings</span>
+</div>
+</nav>
+<div class="mt-auto space-y-1">
+<button class="w-full bg-primary text-on-primary py-3 px-4 rounded-2xl font-semibold text-sm mb-6 flex items-center justify-center gap-2 shadow-lg shadow-primary/10 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+                Add Transaction
+            </button>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl cursor-pointer text-sm font-medium">
+<span class="material-symbols-outlined">support</span>
+<span>Help Center</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl cursor-pointer text-sm font-medium">
+<span class="material-symbols-outlined">logout</span>
+<span>Sign Out</span>
+</div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<main class="flex-1 ml-72 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-8 py-4 w-full sticky top-0 z-50 bg-white/80 dark:bg-emerald-950/80 backdrop-blur-2xl shadow-sm">
+<div class="flex items-center gap-6">
+<span class="text-2xl font-bold text-emerald-900 dark:text-emerald-50 font-manrope tracking-tight">Ibihub Reconcile</span>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 text-sm w-80 focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all" placeholder="Search logs, events, users..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<nav class="hidden md:flex items-center gap-6 mr-6">
+<span class="text-slate-500 font-medium cursor-pointer hover:text-primary transition-colors text-sm">Overview</span>
+<span class="text-emerald-700 dark:text-emerald-300 font-bold border-b-2 border-emerald-700 pb-1 text-sm">Audit Trail</span>
+<span class="text-slate-500 font-medium cursor-pointer hover:text-primary transition-colors text-sm">Compliance</span>
+</nav>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-emerald-50/50 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">notifications_active</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-emerald-50/50 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">apps</span>
+</button>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden ml-2 border-2 border-surface-container-high cursor-pointer active:scale-95 transition-transform">
+<img alt="Financial Officer Profile" class="w-full h-full object-cover" data-alt="professional financial officer portrait with a confident expression in a bright modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPMQuQFHuDA8CdAqnK1d-E-D-v8j3arx1UrUlwe3Ah2bfFA8r6AcPaaWGNUP9a0epmMY6KEBVO9cLKQ0KaWrByua0NwLI9bpyqAsWmU88JfhM9WrBZxzDFyP7jbMCfaXa50ea3QkcQA0f8jDSsKd0W7kzg3f09LR-EfGqlbl1p5tYevfUFuy1v1-24ABwPKOuUsQgIl16a9rTq23IAvZrKufnVNIlYXU-ObbLgJJvNyo-Ox-1vLl-7Enva7T2vmxQgAX21IUdGVKc"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-8 flex gap-8">
+<!-- Filter Sidebar -->
+<aside class="w-72 shrink-0 space-y-8">
+<div>
+<h3 class="font-manrope font-bold text-emerald-900 mb-4 px-2">Security Filters</h3>
+<div class="bg-surface-container-low p-6 rounded-lg space-y-6">
+<div class="space-y-2">
+<label class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Date Range</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">calendar_today</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-2xl pl-10 py-2 text-sm text-slate-700 shadow-sm" type="text" value="Last 7 Days"/>
+</div>
+</div>
+<div class="space-y-3">
+<label class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Action Type</label>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-xs font-semibold rounded-full cursor-pointer">All</span>
+<span class="px-3 py-1 bg-surface-container-high text-slate-600 text-xs font-semibold rounded-full cursor-pointer hover:bg-emerald-50 transition-colors">Validated</span>
+<span class="px-3 py-1 bg-surface-container-high text-slate-600 text-xs font-semibold rounded-full cursor-pointer hover:bg-emerald-50 transition-colors">Deleted</span>
+<span class="px-3 py-1 bg-surface-container-high text-slate-600 text-xs font-semibold rounded-full cursor-pointer hover:bg-emerald-50 transition-colors">Created</span>
+</div>
+</div>
+<div class="space-y-3">
+<label class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Severity</label>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-4 h-4 rounded-full border-2 border-primary group-hover:bg-primary/10 flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+<span class="text-sm text-slate-700">Critical</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-4 h-4 rounded-full border-2 border-slate-300 group-hover:border-primary"></div>
+<span class="text-sm text-slate-700">Informational</span>
+</label>
+</div>
+</div>
+<button class="w-full bg-emerald-900/5 text-emerald-900 py-2 rounded-2xl font-bold text-xs hover:bg-emerald-900/10 transition-colors">
+                            Clear Filters
+                        </button>
+</div>
+</div>
+<div class="bg-emerald-900 text-white p-6 rounded-lg relative overflow-hidden">
+<div class="relative z-10">
+<span class="material-symbols-outlined mb-2 block" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<h4 class="font-manrope font-bold mb-1">Compliance Score</h4>
+<p class="text-xs text-emerald-100/70 mb-4 leading-relaxed">Your workspace audit coverage is currently at 98%.</p>
+<div class="h-1.5 bg-emerald-800 rounded-full w-full overflow-hidden">
+<div class="h-full bg-emerald-400 w-[98%]"></div>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-8xl">shield</span>
+</div>
+</div>
+</aside>
+<!-- Table Container -->
+<section class="flex-1">
+<div class="flex justify-between items-end mb-8 px-2">
+<div>
+<h2 class="text-3xl font-manrope font-extrabold text-emerald-900 tracking-tight">Security Audit Logs</h2>
+<p class="text-slate-500 text-sm mt-1">Real-time immutable history of all platform operations.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 bg-surface-container-low text-slate-700 font-bold text-xs rounded-2xl flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+                            Export CSV
+                        </button>
+<button class="px-5 py-2.5 bg-primary text-white font-bold text-xs rounded-2xl shadow-lg shadow-primary/20 flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">print</span>
+                            Generate PDF Report
+                        </button>
+</div>
+</div>
+<!-- Log Table (High-End Asymmetric List) -->
+<div class="space-y-3">
+<!-- Header Row -->
+<div class="grid grid-cols-12 gap-4 px-8 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+<div class="col-span-3">Entity &amp; User</div>
+<div class="col-span-3">Operation</div>
+<div class="col-span-2">Network Data</div>
+<div class="col-span-3">Timeline</div>
+<div class="col-span-1 text-right">Detail</div>
+</div>
+<!-- Log Entry 1 -->
+<div class="grid grid-cols-12 gap-4 bg-surface-container-lowest p-8 rounded-lg shadow-sm hover:shadow-md transition-all items-center relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="col-span-3 flex items-center gap-4">
+<img alt="User Avatar" class="w-10 h-10 rounded-full" data-alt="close-up portrait of a male professional with minimalist lighting, high-end editorial style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCxdVX-ZoTOLbWiayktavP9YuFnSxKtL-uCg9Y6FQUdjSSFnIAKb-7QKjekiaFHjwnpqNOcSOBj7qqkRDqq4B1hsUODyL3JWgiWoLqmQ3YfD5VRc1IvtSP7tLAcleFPn-faJ-LRA4zi-3JRB0VHBzmRy9tzJF1RM95kMfmQz-BHfwSMxGYe2HVrAidMv_laYMrEE1rC6UYK40lVPWfwh-4TSgICw36MvuV8twRlQDzOV4f89pBvDjwJoTs4YeeQJyf_DDeOiCT5uQ"/>
+<div>
+<p class="text-sm font-bold text-slate-800">Sarah Jenkins</p>
+<p class="text-xs text-slate-500">Senior Accountant</p>
+</div>
+</div>
+<div class="col-span-3">
+<div class="flex items-center gap-2">
+<span class="text-sm font-semibold text-emerald-800">Validated Reconciliation</span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<p class="text-[10px] text-slate-400 mt-1">Ref: #REC-88421-IBI</p>
+</div>
+<div class="col-span-2">
+<p class="text-xs font-mono text-slate-600">192.168.1.104</p>
+<p class="text-[10px] text-slate-400">Nairobi, KE • MacOS</p>
+</div>
+<div class="col-span-3">
+<p class="text-xs font-medium text-slate-700">Oct 12, 2023 • 09:41:02 AM</p>
+<p class="text-[10px] text-emerald-600 font-bold mt-1">LATENCY: 42ms</p>
+</div>
+<div class="col-span-1 text-right">
+<button class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 group-hover:bg-primary group-hover:text-white transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</div>
+</div>
+<!-- Log Entry 2 (Diff Display) -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm">
+<div class="grid grid-cols-12 gap-4 items-center relative mb-6">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="col-span-3 flex items-center gap-4">
+<img alt="User Avatar" class="w-10 h-10 rounded-full" data-alt="elegant female professional portrait with soft natural lighting and minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg5QquyK25_4HH3vSuuxV0wHQXDPVGJGN9v7cvDJ-cLtfNN2NhF-QRNLvcCw3545Ki1-PwLQGTWxjq3LvcZUCuRTNwh6CzxUmmvgnKTPHrYcC8hxKb7tc9r4cQG4ewGS4FC3PQZyFW8DOvbhoYCjuwJsJKM-G3RvoWtrVV1RyKy5shvSSUgPoco4tA6teI2DlKWul737gMvj0HgD31zhCzOGRe8ZKRWBpqJmRBxD1qAL6VkPLZEmWoWROucMQx4bMYn-inszcRnpY"/>
+<div>
+<p class="text-sm font-bold text-slate-800">David Chen</p>
+<p class="text-xs text-slate-500">Security Admin</p>
+</div>
+</div>
+<div class="col-span-3">
+<div class="flex items-center gap-2">
+<span class="text-sm font-semibold text-emerald-800">Edited Ledger Permission</span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<p class="text-[10px] text-slate-400 mt-1">Ref: #USR-MOD-110</p>
+</div>
+<div class="col-span-2">
+<p class="text-xs font-mono text-slate-600">45.22.191.2</p>
+<p class="text-[10px] text-slate-400">London, UK • VPN</p>
+</div>
+<div class="col-span-3">
+<p class="text-xs font-medium text-slate-700">Oct 12, 2023 • 08:15:33 AM</p>
+<p class="text-[10px] text-emerald-600 font-bold mt-1">SECURE CHANNEL</p>
+</div>
+<div class="col-span-1 text-right">
+<span class="material-symbols-outlined text-sm text-primary">expand_less</span>
+</div>
+</div>
+<!-- Diff Section -->
+<div class="ml-14 grid grid-cols-2 gap-8 pt-6 border-t border-slate-100">
+<div>
+<span class="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-2 block">Previous Value</span>
+<div class="bg-red-50/50 p-4 rounded-xl">
+<code class="text-xs text-red-700">"role": "editor",<br/>"can_delete": false,<br/>"audit_exempt": true</code>
+</div>
+</div>
+<div>
+<span class="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-2 block">New Value</span>
+<div class="bg-emerald-50/50 p-4 rounded-xl">
+<code class="text-xs text-emerald-800">"role": "admin",<br/>"can_delete": true,<br/>"audit_exempt": false</code>
+</div>
+</div>
+</div>
+</div>
+<!-- Log Entry 3 -->
+<div class="grid grid-cols-12 gap-4 bg-surface-container-lowest p-8 rounded-lg shadow-sm hover:shadow-md transition-all items-center relative overflow-hidden group opacity-80">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
+<div class="col-span-3 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-800">System Bot</p>
+<p class="text-xs text-slate-500">Automated Task</p>
+</div>
+</div>
+<div class="col-span-3">
+<div class="flex items-center gap-2">
+<span class="text-sm font-semibold text-on-surface">Archived Records</span>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<p class="text-[10px] text-slate-400 mt-1">Ref: #SYS-ARCH-2023</p>
+</div>
+<div class="col-span-2">
+<p class="text-xs font-mono text-slate-600">Localhost</p>
+<p class="text-[10px] text-slate-400">Server Internal</p>
+</div>
+<div class="col-span-3">
+<p class="text-xs font-medium text-slate-700">Oct 11, 2023 • 11:59:59 PM</p>
+<p class="text-[10px] text-tertiary font-bold mt-1">SCHEDULED</p>
+</div>
+<div class="col-span-1 text-right">
+<button class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 group-hover:bg-primary group-hover:text-white transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex justify-between items-center px-4 py-8">
+<p class="text-xs text-slate-500">Showing 25 of 12,842 security events</p>
+<div class="flex gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-slate-400 hover:bg-emerald-50 transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-slate-600 hover:bg-emerald-50 transition-colors">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-slate-600 hover:bg-emerald-50 transition-colors">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-slate-400 hover:bg-emerald-50 transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Contextual FAB (Hidden on detail page as per rules, but included if viewed as home) -->
+<!-- Suppressed on Details/Transactional screens as per Shell Visibility rule -->
+</body></html>

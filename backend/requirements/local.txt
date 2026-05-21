@@ -1,0 +1,13 @@
+# Minimal requirements for local development with SQLite (no PostgreSQL/Redis required).
+# Versions chosen for Python 3.14 compatibility (no version pins on libs that
+# would force compiling Rust/C extensions without prebuilt wheels).
+Django>=5.1
+django-environ>=0.11
+django-cors-headers>=4.4
+djangorestframework>=3.15
+django-filter>=24.0
+Pillow>=11.0
+python-decouple>=3.8
+whitenoise>=6.7
+mistralai>=1.0
+PyPDF2>=3.0

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transaction Detail - TRX-9821</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e8e8ea",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "secondary-fixed": "#93f2f2",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#6fdba8",
+                        "primary-container": "#00855b",
+                        "tertiary-container": "#956e00",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f9f9fb",
+                        "surface-variant": "#e2e2e4",
+                        "on-tertiary-fixed": "#261a00",
+                        "on-secondary-container": "#006e6e",
+                        "outline-variant": "#bdcac0",
+                        "primary": "#006947",
+                        "inverse-primary": "#6fdba8",
+                        "on-secondary": "#ffffff",
+                        "background": "#f9f9fb",
+                        "inverse-surface": "#2f3132",
+                        "tertiary-fixed-dim": "#fbbc00",
+                        "on-background": "#1a1c1d",
+                        "tertiary": "#765700",
+                        "primary-fixed": "#8bf8c3",
+                        "outline": "#6e7a72",
+                        "on-tertiary-fixed-variant": "#5c4300",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-container": "#f5fff6",
+                        "secondary-container": "#90efef",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d9dadc",
+                        "surface-container-low": "#f3f3f5",
+                        "tertiary-fixed": "#ffdfa0",
+                        "on-surface-variant": "#3e4942",
+                        "on-surface": "#1a1c1d",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-primary": "#ffffff",
+                        "surface": "#f9f9fb",
+                        "surface-tint": "#006c49",
+                        "surface-container-highest": "#e2e2e4",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#eeeef0",
+                        "secondary": "#006a6a",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "on-primary-fixed": "#002113",
+                        "inverse-on-surface": "#f0f0f2",
+                        "on-secondary-fixed": "#002020"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Sidebar Navigation -->
+<nav class="fixed left-0 top-0 flex flex-col h-full p-6 border-r-0 bg-slate-50 dark:bg-emerald-950 h-screen w-72 rounded-r-[24px] shadow-[20px_0_40px_rgba(0,0,0,0.02)] z-50">
+<div class="mb-12 px-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">spa</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-emerald-900 dark:text-emerald-50 font-manrope">The Sanctuary</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Enterprise ERP Suite</p>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-1">
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-inter text-sm tracking-wide font-medium">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-emerald-800/40 text-emerald-900 dark:text-emerald-50 rounded-2xl shadow-sm font-semibold duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-inter text-sm tracking-wide">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span>Reconcile</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-inter text-sm tracking-wide font-medium">
+<span class="material-symbols-outlined">menu_book</span>
+<span>Ledgers</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-inter text-sm tracking-wide font-medium">
+<span class="material-symbols-outlined">query_stats</span>
+<span>Analytics</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-inter text-sm tracking-wide font-medium">
+<span class="material-symbols-outlined">corporate_fare</span>
+<span>Entities</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-800/20 rounded-2xl duration-300 ease-out translate-x-1 hover:translate-x-2 cursor-pointer font-inter text-sm tracking-wide font-medium">
+<span class="material-symbols-outlined">settings_suggest</span>
+<span>Settings</span>
+</div>
+</div>
+<div class="mt-auto pt-6 flex flex-col gap-4 border-t border-slate-100 dark:border-emerald-900/30">
+<button class="w-full bg-primary text-on-primary py-3 px-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">add</span>
+                Add Transaction
+            </button>
+<div class="flex items-center gap-3 px-4 py-2 text-slate-500 text-sm font-medium cursor-pointer hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">support</span>
+<span>Help Center</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-2 text-slate-500 text-sm font-medium cursor-pointer hover:text-error transition-colors">
+<span class="material-symbols-outlined text-xl">logout</span>
+<span>Sign Out</span>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-72 min-h-screen">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center px-8 py-4 w-full sticky top-0 z-40 bg-white/80 dark:bg-emerald-950/80 backdrop-blur-2xl shadow-sm">
+<div class="flex items-center gap-8">
+<div class="text-2xl font-bold text-emerald-900 dark:text-emerald-50 font-manrope tracking-tight">
+                    Ibihub Reconcile
+                </div>
+<div class="relative w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400" placeholder="Find transactions, entities..." type="text"/>
+</div>
+</div>
+<nav class="hidden lg:flex items-center gap-8">
+<a class="text-emerald-700 dark:text-emerald-300 font-bold border-b-2 border-emerald-700 py-1 transition-colors" href="#">Audit Trail</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-emerald-700 transition-colors" href="#">Documents</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-emerald-700 transition-colors" href="#">Verification</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="p-2 text-slate-500 hover:bg-emerald-50/50 rounded-full cursor-pointer transition-colors relative">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full ring-2 ring-white"></span>
+</div>
+<div class="p-2 text-slate-500 hover:bg-emerald-50/50 rounded-full cursor-pointer transition-colors">
+<span class="material-symbols-outlined">apps</span>
+</div>
+<div class="flex items-center gap-3 ml-2 pl-4 border-l border-slate-100">
+<div class="text-right">
+<p class="text-xs font-bold text-on-surface">Financial Officer</p>
+<p class="text-[10px] text-slate-400">ID: #FO-441</p>
+</div>
+<img alt="Financial Officer Profile" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary/10" data-alt="professional portrait of a confident african woman in formal business attire with a soft office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5W4VysBWzu3MHBi8rEf9CqdVGl45hXbO_FScpkuFfSc4lyqUYxeUFzLqrQl8092h8vto7gx5BzTLU87qlQurVfIQxIUtHMzn7MnNp-LTIP1JNSxgk_IurPcBpQ5Xs4pHz2RrXklEXnkbxBZactiulS5VuRSpL8mvs6FSIhli2GIJWXVWOJ3ZtoDNt8J_qPA5DG2AV3ut0-DJxeNZYpgsh5NE3z5nrhyZxwNrzARBQKOGh9PiG7bK25PUahRMJNqOAhdZCllg1N4Q"/>
+</div>
+</div>
+</header>
+<!-- View Content -->
+<div class="p-8 max-w-7xl mx-auto">
+<!-- Breadcrumbs & Actions -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<nav class="flex items-center gap-2 text-xs text-slate-400 mb-2 font-medium">
+<span>Transactions</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-primary font-bold">Deep Dive</span>
+</nav>
+<h2 class="text-4xl font-headline font-extrabold tracking-tight text-on-surface flex items-center gap-4">
+                        TRX-9821
+                        <span class="text-sm font-label px-3 py-1 bg-primary/10 text-primary rounded-full tracking-wide">MATCHED</span>
+</h2>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 bg-surface-container-high text-on-surface text-sm font-bold rounded-2xl hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">print</span>
+                        Print Voucher
+                    </button>
+<button class="px-5 py-2.5 bg-primary text-on-primary text-sm font-bold rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">verified</span>
+                        Finalize Audit
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Main Details Panel -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-8">
+<!-- Transaction Overview Card -->
+<div class="glass-panel p-8 rounded-lg shadow-sm border border-white/40 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="space-y-1">
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Operator</p>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-[#FF6600] flex items-center justify-center text-[10px] font-bold text-white">O</div>
+<p class="font-bold text-on-surface">Orange Money</p>
+</div>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Wallet Source</p>
+<p class="font-bold text-on-surface">Business Float 2</p>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Execution Date</p>
+<p class="font-bold text-on-surface">24 Oct, 2023</p>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Status</p>
+<div class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<p class="font-bold">Success</p>
+</div>
+</div>
+</div>
+<div class="mt-12 flex items-baseline gap-4">
+<span class="text-5xl font-headline font-black text-emerald-900 tracking-tighter">45,000</span>
+<span class="text-xl font-headline font-bold text-emerald-600/60 uppercase">FCFA</span>
+</div>
+<div class="mt-8 pt-8 border-t border-slate-100/50 flex flex-wrap gap-12">
+<div class="flex gap-4 items-center">
+<div class="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 font-bold">Transaction Fee</p>
+<p class="text-sm font-bold">450 FCFA (1%)</p>
+</div>
+</div>
+<div class="flex gap-4 items-center">
+<div class="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">account_tree</span>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 font-bold">Channel</p>
+<p class="text-sm font-bold">API Gateway V3</p>
+</div>
+</div>
+<div class="flex gap-4 items-center">
+<div class="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 font-bold">Region</p>
+<p class="text-sm font-bold">Yaoundé, CM</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Linked Invoice Card -->
+<div class="bg-surface-container-low rounded-lg p-8">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-headline font-bold text-on-surface">Linked Invoice</h3>
+<button class="text-xs font-bold text-primary hover:underline">View Document</button>
+</div>
+<div class="glass-panel p-6 rounded-2xl border border-white/80 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 bg-white rounded-2xl flex flex-col items-center justify-center shadow-sm text-slate-300">
+<span class="material-symbols-outlined text-3xl">description</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 font-bold">INV-2023-OCT-0122</p>
+<p class="font-bold text-on-surface">Logistics - Q4 Distribution</p>
+<p class="text-xs text-slate-500">Issued: Oct 20, 2023</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xl font-headline font-extrabold text-on-surface">45,000 FCFA</p>
+<p class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full inline-block mt-1">FULLY PAID</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Audit Trail Sidebar -->
+<div class="col-span-12 lg:col-span-4">
+<div class="glass-panel p-8 rounded-lg shadow-sm border border-white/40 h-full">
+<h3 class="text-lg font-headline font-bold text-on-surface mb-8 flex items-center gap-2">
+<span class="material-symbols-outlined text-xl text-primary">history</span>
+                            Audit Trail
+                        </h3>
+<div class="relative space-y-12">
+<!-- Timeline Line -->
+<div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-slate-100"></div>
+<!-- Audit Point 1 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center ring-4 ring-white z-10">
+<span class="material-symbols-outlined text-[12px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="space-y-1">
+<p class="text-xs font-bold text-on-surface">Reconciliation Confirmed</p>
+<p class="text-[11px] text-slate-400">Automated Match Engine V2</p>
+<p class="text-[10px] text-primary font-semibold">Today, 09:45 AM</p>
+</div>
+</div>
+<!-- Audit Point 2 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center ring-4 ring-white z-10">
+<span class="material-symbols-outlined text-[12px] text-slate-500">person</span>
+</div>
+<div class="space-y-1">
+<p class="text-xs font-bold text-on-surface">Internal Review</p>
+<p class="text-[11px] text-slate-400 text-on-surface font-medium italic">"Confirmed matched with invoice bank ref"</p>
+<div class="flex items-center gap-2 mt-2">
+<img alt="Sarah Connor" class="w-5 h-5 rounded-full object-cover" data-alt="close-up headshot of a professional male analyst in a studio setting with clean lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9zZsPSSG8F2FJWX-7sGx2ZsnZ_WLdk7jnqVgsJv6XPoylINKfUnKEBL0ghgr3Yniwuvo00OmtCPVcYGPJTxftTqErXR9CP0j3xKy_T9liEPsiMEUBFomY_k9NMif27vJ8vdAXNPK4rFoAgSpRoMhAPesQ-oy1r_eOF1vt7GD77WJM8Fvnud_pzqGb1_wKo6EqfQI3ERzmcjCooGDBQyFApKZIYxjivHZeImGJvQnzHMc8LJ-oF7XcMTf5WMIqqPlrTMzCX1y4w2M"/>
+<span class="text-[10px] font-bold">Sarah Connor (Analyst)</span>
+</div>
+<p class="text-[10px] text-slate-400 font-semibold uppercase">24 Oct, 04:22 PM</p>
+</div>
+</div>
+<!-- Audit Point 3 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center ring-4 ring-white z-10">
+<span class="material-symbols-outlined text-[12px] text-slate-500">bolt</span>
+</div>
+<div class="space-y-1">
+<p class="text-xs font-bold text-on-surface">Payment Processed</p>
+<p class="text-[11px] text-slate-400">Orange Money Webhook Entry</p>
+<p class="text-[10px] text-slate-400 font-semibold uppercase">24 Oct, 04:15 PM</p>
+</div>
+</div>
+<!-- Audit Point 4 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center ring-4 ring-white z-10">
+<span class="material-symbols-outlined text-[12px] text-slate-500">add_task</span>
+</div>
+<div class="space-y-1">
+<p class="text-xs font-bold text-on-surface">Transaction Initiated</p>
+<p class="text-[11px] text-slate-400">Merchant Terminal #992</p>
+<p class="text-[10px] text-slate-400 font-semibold uppercase">24 Oct, 04:14 PM</p>
+</div>
+</div>
+</div>
+<div class="mt-12 bg-primary/5 p-4 rounded-2xl border border-primary/10">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary text-lg">verified_user</span>
+<p class="text-xs font-bold text-primary">Compliance Check</p>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+                                This transaction has passed all KYC/AML thresholds and aligns with the entity's historical velocity patterns.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Meta -->
+<div class="mt-12 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4">
+<div class="flex gap-8">
+<span>Server: HUB-AWS-AF-1</span>
+<span>Lat: 3.8480° N, 11.5021° E</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                    Systems Nominal
+                </div>
+</div>
+</div>
+</main>
+<!-- Map Context Overlay (Subtle) -->
+<div class="fixed bottom-8 right-8 w-64 h-40 rounded-lg overflow-hidden shadow-2xl border-4 border-white z-10 pointer-events-none group">
+<img class="w-full h-full object-cover grayscale opacity-50 contrast-125" data-alt="a minimalist map visualization with glowing lines representing data connections in a financial network" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ7qSTz8P55WIf9OaDvEx2hkpqT9cRFaD-BgU1m24xjvNNlRfbUmQYItytx_dmmXzS-_jqqrefY8MqVA1jUI-U0Jb3dRiaIUjHwA9ynBY7z379jUWsCaWWWEnmX_qnn13grdicZRfrXjVIsQJ0LuE_AK650gS-vP2Put9RYjONnoElAB95_A8f13EmjVQ_TsesenzNoGIxvPn9f0C1xm7gF5XtS1d_U-dyLPIZOxY3CYGJbCa_wRMwRFMZhpld8dgrr2tlyLtcd7M"/>
+<div class="absolute inset-0 bg-primary/20 mix-blend-overlay"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-sm">
+<p class="text-[10px] font-black text-primary tracking-widest">GATEWAY ACTIVE</p>
+</div>
+</div>
+</div>
+</body></html>

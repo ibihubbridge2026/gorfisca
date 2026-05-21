@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 239 246 251;
+    --foreground: 26 28 29;
+    --primary: 0 105 71;
+    --primary-foreground: 255 255 255;
+    --secondary: 0 106 106;
+    --secondary-foreground: 255 255 255;
+    --tertiary: 118 87 0;
+    --tertiary-foreground: 255 255 255;
+    --surface: 249 249 251;
+    --surface-foreground: 26 28 29;
+    --surface-container: 238 238 240;
+    --surface-container-low: 243 243 245;
+    --surface-container-high: 232 232 234;
+    --surface-container-highest: 226 226 228;
+    --outline: 110 122 114;
+    --outline-variant: 189 202 192;
+    --error: 186 26 26;
+    --error-foreground: 255 255 255;
+  }
+
+  * {
+    @apply border-outline;
+  }
+  
+  body {
+    @apply bg-surface text-on-surface font-body;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-headline;
+  }
+  
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  }
+}
+
+@layer components {
+  /* Glass Panel Effect */
+  .glass-panel {
+    @apply bg-surface-container-lowest/80 backdrop-blur-md;
+  }
+  
+  /* Reconcile Ribbons */
+  .reconcile-ribbon-primary {
+    @apply border-l-4 border-primary;
+  }
+  
+  .reconcile-ribbon-pending {
+    @apply border-l-4 border-tertiary;
+  }
+  
+  /* Hero Numbers */
+  .hero-number {
+    @apply text-5xl font-headline font-extrabold tracking-tighter;
+  }
+  
+  /* Editorial Headers */
+  .editorial-header {
+    @apply text-4xl font-headline font-extrabold tracking-tight;
+  }
+  
+  /* Section Headers */
+  .section-header {
+    @apply text-xl font-headline font-extrabold;
+  }
+  
+  /* Card Headers */
+  .card-header {
+    @apply text-sm font-bold tracking-widest text-on-surface-variant uppercase;
+  }
+  
+  /* Table Headers */
+  .table-header {
+    @apply text-[10px] font-bold tracking-widest text-on-surface-variant uppercase;
+  }
+  
+  /* No dividers rule - use spacing instead */
+  .list-item {
+    @apply py-4 hover:bg-surface-container-low transition-colors duration-150;
+  }
+  
+  /* Primary gradient for CTAs */
+  .primary-gradient {
+    @apply bg-gradient-to-r from-primary to-primary-container;
+  }
+}

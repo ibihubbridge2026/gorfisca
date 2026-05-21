@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ibihub Reconcile | Financial Sanctuary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-container": "#90efef",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "primary": "#006947",
+                        "on-primary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#00855b",
+                        "tertiary": "#765700",
+                        "surface-dim": "#d9dadc",
+                        "tertiary-fixed": "#ffdfa0",
+                        "surface-bright": "#f9f9fb",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f3f3f5",
+                        "inverse-surface": "#2f3132",
+                        "outline": "#6e7a72",
+                        "on-secondary-fixed": "#002020",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#93f2f2",
+                        "on-error-container": "#93000a",
+                        "secondary": "#006a6a",
+                        "on-tertiary-fixed": "#261a00",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-tertiary-fixed-variant": "#5c4300",
+                        "tertiary-container": "#956e00",
+                        "on-primary-container": "#f5fff6",
+                        "background": "#f9f9fb",
+                        "inverse-primary": "#6fdba8",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e8e8ea",
+                        "on-tertiary-container": "#fffbff",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#006e6e",
+                        "tertiary-fixed-dim": "#fbbc00",
+                        "primary-fixed-dim": "#6fdba8",
+                        "surface-tint": "#006c49",
+                        "outline-variant": "#bdcac0",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f9f9fb",
+                        "on-surface-variant": "#3e4942",
+                        "primary-fixed": "#8bf8c3",
+                        "surface-variant": "#e2e2e4",
+                        "on-background": "#1a1c1d",
+                        "surface-container-highest": "#e2e2e4",
+                        "inverse-on-surface": "#f0f0f2",
+                        "surface-container": "#eeeef0",
+                        "on-surface": "#1a1c1d",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "error-container": "#ffdad6"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9fb; color: #1a1c1d; }
+        h1, h2, h3, .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(24px);
+        }
+        .reconcile-ribbon-primary { border-left: 4px solid #006947; }
+        .reconcile-ribbon-pending { border-left: 4px solid #765700; }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="flex flex-col w-72 h-screen p-6 fixed left-0 top-0 border-r-0 bg-slate-50 dark:bg-slate-950 z-50 rounded-r-lg">
+<div class="flex items-center gap-3 mb-10 px-4">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h2 class="font-manrope font-extrabold text-emerald-800 dark:text-emerald-200 text-lg leading-tight">Ibihub Reconcile</h2>
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Financial Sanctuary</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-4 bg-emerald-100/50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 rounded-[24px] px-4 py-3 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-inter tracking-wide text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 dark:text-slate-400 px-4 py-3 hover:text-emerald-600 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all rounded-[24px]" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-inter tracking-wide text-sm font-medium">Sales</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 dark:text-slate-400 px-4 py-3 hover:text-emerald-600 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all rounded-[24px]" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="font-inter tracking-wide text-sm font-medium">Treasury</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 dark:text-slate-400 px-4 py-3 hover:text-emerald-600 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all rounded-[24px]" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-inter tracking-wide text-sm font-medium">Accounting</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 dark:text-slate-400 px-4 py-3 hover:text-emerald-600 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all rounded-[24px]" href="#">
+<span class="material-symbols-outlined" data-icon="rule">rule</span>
+<span class="font-inter tracking-wide text-sm font-medium">Reconciliation</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 dark:text-slate-400 px-4 py-3 hover:text-emerald-600 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all rounded-[24px]" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-inter tracking-wide text-sm font-medium">Reports</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 dark:text-slate-400 px-4 py-3 hover:text-emerald-600 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all rounded-[24px]" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-inter tracking-wide text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="mt-auto">
+<button class="w-full py-4 bg-primary text-white rounded-lg font-semibold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span>New Entry</span>
+</button>
+</div>
+</aside>
+<!-- Main Wrapper -->
+<main class="flex-1 ml-72 min-h-screen">
+<!-- Top Navigation -->
+<header class="flex justify-between items-center w-full px-8 py-4 sticky top-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl z-40 shadow-[0_20px_50px_rgba(0,0,0,0.04)]">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-96">
+<span class="material-symbols-outlined text-slate-400 mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-400" placeholder="Rechercher une transaction..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative p-2 text-slate-500 hover:bg-emerald-50/50 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full ring-2 ring-white"></span>
+</button>
+<div class="flex items-center gap-3 pl-6 border-l border-slate-200">
+<div class="text-right">
+<p class="text-sm font-bold text-slate-800">M. Diop</p>
+<p class="text-[10px] text-slate-400 font-medium">Administrateur</p>
+</div>
+<img alt="User Profile Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary/10" data-alt="portrait of a professional West African man in his 40s wearing a light blue dress shirt with a clean haircut and neutral expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBudIgNJ0KfDndnMOXoqBFqjyaovz2QGnJCqHi7Go5sgoeXo7qebB9ASm1wxnoZKRFjT5mIt6ODmyOhEYsJOizZm2Vfws_OvGA79lF83ptq0--nLWGOLvc9rw08remuLss3EuF1A6BTA5VSRsEYCVMtVi4jPNisT_iLkeCcgaPxikyZN485MRs3BFva0avHU2Rj7j-c_dfkJMxe77xmHM5WudSOMrtWTYxL5v9G-eveHzfV1VSLxvkhCHdEwFC0dWs8EzGEoGoyIM"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-8 max-w-[1600px] mx-auto space-y-8">
+<!-- Welcome Header -->
+<section class="space-y-1">
+<h1 class="text-3xl font-manrope font-extrabold text-on-surface">Bienvenue, M. Diop</h1>
+<p class="text-slate-500 font-medium">Voici l'état de votre santé financière aujourd'hui.</p>
+</section>
+<!-- Hero Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm shadow-emerald-900/5 relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+</div>
+<span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+12.5%</span>
+</div>
+<p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Ventes ce mois-ci</p>
+<h3 class="text-2xl font-manrope font-extrabold text-slate-900">2,830,000 <span class="text-sm font-medium">FCFA</span></h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm shadow-emerald-900/5">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl">
+<span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
+</div>
+</div>
+<p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Transactions réconciliées</p>
+<h3 class="text-2xl font-manrope font-extrabold text-slate-900">179 <span class="text-sm font-medium">vols</span></h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm shadow-emerald-900/5 border-b-4 border-tertiary/20">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-amber-50 text-tertiary rounded-xl">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+</div>
+<p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Paiements à rapprocher</p>
+<h3 class="text-2xl font-manrope font-extrabold text-tertiary">24 <span class="text-sm font-medium">restants</span></h3>
+</div>
+</div>
+<!-- Main Content Layout (Asymmetric) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left/Center Column: Reconciliation Panel -->
+<div class="lg:col-span-2 space-y-8">
+<div class="bg-surface-container-lowest rounded-lg p-8 shadow-sm">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-xl font-manrope font-extrabold flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="phonelink_setup">phonelink_setup</span>
+                                Réconciliation Mobile Money
+                            </h2>
+<button class="text-primary font-bold text-sm hover:underline">Voir tout le flux</button>
+</div>
+<!-- Visual Flow -->
+<div class="flex items-center justify-between bg-surface-container-low p-6 rounded-xl mb-10 relative">
+<div class="bg-white p-4 rounded-lg shadow-sm w-48 border-l-4 border-primary">
+<p class="text-[10px] text-slate-400 font-bold uppercase">Opérateur ID</p>
+<p class="font-bold text-slate-800">OM981023</p>
+<div class="flex items-center gap-1 mt-2">
+<span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+<span class="text-[10px] text-emerald-600 font-bold">Identifié</span>
+</div>
+</div>
+<div class="flex-1 h-px bg-slate-200 mx-4 relative">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white p-1 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
+</div>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-sm w-48 border-l-4 border-primary">
+<p class="text-[10px] text-slate-400 font-bold uppercase">Facture ERP</p>
+<p class="font-bold text-slate-800">FAC-2025-00012</p>
+<p class="text-[10px] text-slate-500 font-medium mt-2">S. SARL Dakar</p>
+</div>
+</div>
+<!-- Transaction Table -->
+<div class="space-y-4">
+<div class="grid grid-cols-4 px-4 py-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
+<span>Canal</span>
+<span>Date</span>
+<span class="text-right">Montant</span>
+<span class="text-center">Statut</span>
+</div>
+<!-- List Item 1 -->
+<div class="grid grid-cols-4 items-center px-4 py-4 bg-surface-container-low/50 hover:bg-white hover:shadow-lg transition-all rounded-xl cursor-pointer reconcile-ribbon-primary">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-[#FFD700] rounded-lg flex items-center justify-center font-bold text-[10px]">MTN</div>
+<span class="text-sm font-bold text-slate-700">MTN Mobile</span>
+</div>
+<span class="text-sm text-slate-500 font-medium">14 Mar, 10:24</span>
+<span class="text-right font-bold text-slate-900">45,000 <span class="text-[10px]">F</span></span>
+<div class="flex justify-center">
+<span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full">MATCHED</span>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="grid grid-cols-4 items-center px-4 py-4 bg-surface-container-low/50 hover:bg-white hover:shadow-lg transition-all rounded-xl cursor-pointer reconcile-ribbon-pending">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center font-bold text-[10px]">FLZ</div>
+<span class="text-sm font-bold text-slate-700">Flooz Pay</span>
+</div>
+<span class="text-sm text-slate-500 font-medium">14 Mar, 09:12</span>
+<span class="text-right font-bold text-slate-900">12,500 <span class="text-[10px]">F</span></span>
+<div class="flex justify-center">
+<span class="px-3 py-1 bg-amber-50 text-tertiary text-[10px] font-bold rounded-full">PENDING</span>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="grid grid-cols-4 items-center px-4 py-4 bg-surface-container-low/50 hover:bg-white hover:shadow-lg transition-all rounded-xl cursor-pointer reconcile-ribbon-primary">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-[#FFD700] rounded-lg flex items-center justify-center font-bold text-[10px]">MTN</div>
+<span class="text-sm font-bold text-slate-700">MTN Mobile</span>
+</div>
+<span class="text-sm text-slate-500 font-medium">14 Mar, 08:45</span>
+<span class="text-right font-bold text-slate-900">125,000 <span class="text-[10px]">F</span></span>
+<div class="flex justify-center">
+<span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full">MATCHED</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Sidebar Stats -->
+<div class="space-y-6">
+<!-- Mobile Money Balance -->
+<div class="bg-primary text-white p-6 rounded-lg shadow-xl shadow-primary/20 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8 opacity-10">
+<span class="material-symbols-outlined text-6xl" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<p class="text-emerald-100 text-[10px] font-bold uppercase tracking-widest mb-1">Solde Mobile Money</p>
+<h3 class="text-3xl font-manrope font-extrabold mb-4">371,240 <span class="text-sm">FCFA</span></h3>
+<div class="flex items-center gap-2 text-emerald-100 text-xs font-medium">
+<span class="material-symbols-outlined text-xs" data-icon="history">history</span>
+                            Dernière mise à jour : il y a 5 min
+                        </div>
+</div>
+<!-- Summary Card -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm">
+<h4 class="text-sm font-bold text-slate-800 mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="analytics">analytics</span>
+                            Transactions &amp; Factures
+                        </h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-xs text-slate-500 font-medium">Factures envoyées</span>
+<span class="text-sm font-bold">342</span>
+</div>
+<div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[85%]"></div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<span class="text-xs text-slate-500 font-medium">Rapprochements auto</span>
+<span class="text-sm font-bold text-emerald-600">88%</span>
+</div>
+</div>
+</div>
+<!-- Visual Chart Card Placeholder -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm h-48 flex flex-col justify-between">
+<h4 class="text-sm font-bold text-slate-800">Ventes &amp; Encaissements</h4>
+<div class="flex items-end gap-1.5 h-24 mb-2">
+<div class="bg-emerald-100 w-full h-[40%] rounded-t-sm"></div>
+<div class="bg-emerald-200 w-full h-[60%] rounded-t-sm"></div>
+<div class="bg-primary w-full h-[90%] rounded-t-sm"></div>
+<div class="bg-emerald-300 w-full h-[70%] rounded-t-sm"></div>
+<div class="bg-primary-container w-full h-[85%] rounded-t-sm"></div>
+<div class="bg-emerald-100 w-full h-[50%] rounded-t-sm"></div>
+<div class="bg-emerald-200 w-full h-[65%] rounded-t-sm"></div>
+</div>
+</div>
+<!-- Activity List -->
+<div class="bg-white/50 backdrop-blur-md p-6 rounded-lg shadow-sm">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Activité Terminée</h4>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-2 h-2 mt-1.5 bg-emerald-500 rounded-full"></div>
+<div>
+<p class="text-xs font-bold text-slate-800">Réconciliation FAC-0012</p>
+<p class="text-[10px] text-slate-400">Succès • 09:45</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-2 h-2 mt-1.5 bg-amber-500 rounded-full"></div>
+<div>
+<p class="text-xs font-bold text-slate-800">Ecart détecté Orange Money</p>
+<p class="text-[10px] text-slate-400">Attention • Hier</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-2 h-2 mt-1.5 bg-slate-300 rounded-full"></div>
+<div>
+<p class="text-xs font-bold text-slate-800">Rapport Hebdo généré</p>
+<p class="text-[10px] text-slate-400">Système • Il y a 2 jours</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
