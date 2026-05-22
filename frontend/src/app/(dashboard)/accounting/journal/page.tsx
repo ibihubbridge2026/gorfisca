@@ -21,7 +21,7 @@ import {
 import { ColumnDef } from '@tanstack/react-table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/Card'
 import { 
   DropdownMenu,

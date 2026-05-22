@@ -14,9 +14,10 @@ from apps.invoicing.models import Invoice, InvoiceItem
 from apps.reconciliation.models import BankTransaction
 from apps.core.ai_client import get_ai_client
 from .services.integrity_service import IntegrityService
+from .views_extended import TreasuryRevenueViewSetMixin
 
 
-class ReportingViewSet(viewsets.ViewSet):
+class ReportingViewSet(TreasuryRevenueViewSetMixin, viewsets.ViewSet):
     """
     ViewSet for financial reporting and KPIs
     Optimized for dashboard performance with <300ms response time
@@ -441,6 +442,213 @@ class ReportingViewSet(viewsets.ViewSet):
             entry__date__gte=start_date,
             entry__date__lte=end_date,
             account__account_class__in=[6],
+            line_type='debit'
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        net_result = revenue - expenses
+        
+        return {
+            'total_revenue': float(revenue),
+            'total_expenses': float(expenses),
+            'net_result': float(net_result),
+            'period': {
+                'start': start_date.isoformat(),
+                'end': end_date.isoformat()
+            }
+        }
+    
+    @action(detail=False, methods=['get'], url_path='financial_summary')
+    def financial_summary(self, request):
+        """Get comprehensive financial summary for dashboard"""
+        try:
+            organization = self._get_organization()
+            if not organization:
+                return Response({'error': 'Organization not found'}, status=404)
+            
+            # Get date range
+            end_date = timezone.now().date()
+            start_date = end_date - timedelta(days=30)  # Last 30 days
+            
+            # Get key metrics
+            key_metrics = self._get_key_metrics(organization, start_date, end_date)
+            
+            # Get balance sheet summary
+            balance_sheet = self._get_balance_sheet_summary(organization)
+            
+            # Get income statement summary
+            income_statement = self._get_income_statement_summary(organization, start_date, end_date)
+            
+            # Get cash flow summary
+            cash_flow = self._get_cash_flow_summary(organization, start_date, end_date)
+            
+            return Response({
+                'balance_sheet': balance_sheet,
+                'income_statement': income_statement,
+                'cash_flow': cash_flow,
+                'key_metrics': key_metrics
+            })
+            
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'message': 'Erreur lors du chargement des rapports'
+            }, status=500)
+    
+    def _get_key_metrics(self, organization, start_date, end_date):
+        """Get key financial metrics"""
+        # Total revenue
+        total_revenue = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            entry__date__gte=start_date,
+            entry__date__lte=end_date,
+            account__account_class=7,
+            line_type='credit'
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Total expenses
+        total_expenses = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            entry__date__gte=start_date,
+            entry__date__lte=end_date,
+            account__account_class=6,
+            line_type='debit'
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Net income
+        net_income = total_revenue - total_expenses
+        
+        # Total assets
+        total_assets = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            account__account_class__in=[1, 2, 3, 4, 5],
+            line_type='debit'
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Total liabilities
+        total_liabilities = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            account__account_class=1,
+            line_type='credit'
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Equity
+        equity = total_assets - total_liabilities
+        
+        # Cash balance
+        cash_balance = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            account__account_number__startswith='5',
+            line_type='debit'
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Working capital
+        working_capital = cash_balance - total_liabilities
+        
+        return {
+            'total_revenue': float(total_revenue),
+            'total_expenses': float(total_expenses),
+            'net_income': float(net_income),
+            'total_assets': float(total_assets),
+            'total_liabilities': float(total_liabilities),
+            'equity': float(equity),
+            'cash_balance': float(cash_balance),
+            'working_capital': float(working_capital)
+        }
+    
+    def _get_cash_flow_summary(self, organization, start_date, end_date):
+        """Get cash flow summary"""
+        # Operating cash flow
+        operating_cf = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            entry__date__gte=start_date,
+            entry__date__lte=end_date,
+            account__account_class__in=[6, 7],
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Investing cash flow
+        investing_cf = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            entry__date__gte=start_date,
+            entry__date__lte=end_date,
+            account__account_class__in=[2, 3, 4, 5],
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Financing cash flow
+        financing_cf = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            entry__date__gte=start_date,
+            entry__date__lte=end_date,
+            account__account_class=1,
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        return {
+            'operating_cash_flow': float(operating_cf),
+            'investing_cash_flow': float(investing_cf),
+            'financing_cash_flow': float(financing_cf),
+            'net_cash_flow': float(operating_cf + investing_cf + financing_cf)
+        }
+    
+    def _get_organization(self):
+        """Get user's organization"""
+        user = self.request.user
+        if hasattr(user, 'organization'):
+            return user.organization
+        return None
+    
+    def _get_balance_sheet_summary(self, organization):
+        """Get balance sheet summary"""
+        # Assets (Classes 1-5)
+        assets = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            account__account_class__in=[1, 2, 3, 4, 5],
+            line_type='debit'
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Liabilities (Class 1)
+        liabilities = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            account__account_class=1,
+            line_type='credit'
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Equity (Assets - Liabilities)
+        equity = assets - liabilities
+        
+        return {
+            'total_assets': float(assets),
+            'total_liabilities': float(liabilities),
+            'equity': float(equity)
+        }
+    
+    def _get_income_statement_summary(self, organization, start_date, end_date):
+        """Get income statement summary"""
+        # Revenue (Class 7)
+        revenue = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            entry__date__gte=start_date,
+            entry__date__lte=end_date,
+            account__account_class=7,
+            line_type='credit'
+        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        
+        # Expenses (Class 6)
+        expenses = JournalLine.objects.filter(
+            entry__organization=organization,
+            entry__posted=True,
+            entry__date__gte=start_date,
+            entry__date__lte=end_date,
+            account__account_class=6,
             line_type='debit'
         ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
         

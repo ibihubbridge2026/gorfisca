@@ -9,4 +9,5 @@ router.register(r'imports', ImportBatchViewSet, basename='importbatch')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('upload/', BankTransactionViewSet.as_view({'post': 'bulk_import'}), name='upload_transactions'),
 ]

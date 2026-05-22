@@ -18,7 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['user_type', 'is_active']
+    filterset_fields = ['role', 'is_active']
     search_fields = ['email', 'first_name', 'last_name', 'username']
     ordering_fields = ['email', 'first_name', 'last_name', 'date_joined']
     ordering = ['email']
@@ -47,10 +47,10 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             serializer.save()
         elif self.request.user.id == self.get_object().id:
-            # Users can update their own profile (except organization and user_type)
+            # Users can update their own profile (except organization and role)
             restricted_data = serializer.validated_data.copy()
             restricted_data.pop('organization', None)
-            restricted_data.pop('user_type', None)
+            restricted_data.pop('role', None)
             serializer.save(**restricted_data)
         else:
             raise permissions.PermissionDenied("Vous n'avez pas la permission de modifier cet utilisateur.")
@@ -92,30 +92,68 @@ class UserViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def register(self, request):
-        """Register new user (for first organization setup)"""
-        # Only allow registration if no users exist
-        if User.objects.exists():
-            return Response(
-                {'detail': 'L\'enregistrement n\'est plus autorisé. Contactez un administrateur.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
+        """Register new user with automatic organization creation"""
+        print("=" * 60)
+        print("[REGISTER] Data received:", dict(request.data))
         serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            print("[REGISTER] Validation errors:", serializer.errors)
+            print("=" * 60)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print("[REGISTER] Validation OK")
+        print("=" * 60)
         
+        # Check for invitation token
+        invitation_token = request.data.get('invitation_token')
+        organization = None
+        
+        if invitation_token:
+            # Handle invitation case - user joins existing organization
+            from apps.organizations.models import OrganizationInvitation
+            from django.utils import timezone
+            try:
+                invitation = OrganizationInvitation.objects.get(
+                    token=invitation_token,
+                    is_accepted=False
+                )
+                organization = invitation.organization
+                user_role = invitation.role
+                # Mark invitation as accepted
+                invitation.is_accepted = True
+                invitation.accepted_at = timezone.now()
+                invitation.save()
+            except OrganizationInvitation.DoesNotExist:
+                return Response(
+                    {'detail': 'Token d\'invitation invalide ou expiré.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        
+        # Create user
         user = serializer.save()
         
-        # Create default organization for first user
-        from apps.organizations.models import Organization
-        organization = Organization.objects.create(
-            name=user.first_name + ' SARL',
-            legal_identifier='AUTO-' + str(user.id).zfill(6),
-            email=user.email
-        )
+        if organization:
+            # Assign to existing organization (invitation case)
+            user.organization = organization
+            user.role = user_role
+        else:
+            # Create automatic organization for new founder
+            from apps.organizations.models import Organization
+            import uuid
+            
+            # Create personalized organization
+            org_name = f"Entreprise de {user.first_name}" if user.first_name else "Mon Entreprise"
+            # Generate unique placeholder legal_identifier (will be set in onboarding/settings)
+            placeholder_legal_id = f"PENDING-{uuid.uuid4().hex[:12].upper()}"
+            organization = Organization.objects.create(
+                name=org_name,
+                legal_identifier=placeholder_legal_id,
+                status='active'
+            )
+            
+            # Assign user as admin of their organization
+            user.organization = organization
+            user.role = 'admin'
         
-        # Update user organization
-        user.organization = organization
-        user.user_type = 'admin'  # First user is admin
         user.save()
         
         # Login and return token
@@ -129,7 +167,8 @@ class UserViewSet(viewsets.ModelViewSet):
                 'id': organization.id,
                 'name': organization.name,
                 'legal_identifier': organization.legal_identifier
-            }
+            },
+            'needs_onboarding': organization.legal_identifier.startswith('PENDING-')
         }, status=status.HTTP_201_CREATED)
     
     @action(detail=False, methods=['get'])

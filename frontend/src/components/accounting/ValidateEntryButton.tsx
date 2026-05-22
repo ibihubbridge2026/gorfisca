@@ -9,7 +9,7 @@ import {
   AlertCircle,
   Eye
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import accountingService from '@/services/api/accounting.service'
 
 interface ValidateEntryButtonProps {

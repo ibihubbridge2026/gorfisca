@@ -330,7 +330,7 @@ class NormalizedTransaction(models.Model):
         ('validated', 'Validé'),
         ('rejected', 'Rejeté'),
         ('processed', 'Traité'),
-    ])
+    ]
     
     # Liaison avec l'ingestion brute
     raw_ingestion = models.ForeignKey(
@@ -426,14 +426,12 @@ class NormalizedTransaction(models.Model):
     debit_confidence_score = models.IntegerField(
         null=True,
         blank=True,
-        validators=[lambda x: 0 <= x <= 100],
         verbose_name='Score de confiance débit (0-100)'
     )
     
     credit_confidence_score = models.IntegerField(
         null=True,
         blank=True,
-        validators=[lambda x: 0 <= x <= 100],
         verbose_name='Score de confiance crédit (0-100)'
     )
     

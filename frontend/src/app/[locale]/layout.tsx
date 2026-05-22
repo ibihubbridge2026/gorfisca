@@ -2,6 +2,7 @@ import {ReactNode} from 'react';
 import {NextIntlClientProvider} from 'next-intl';
 import {getMessages} from 'next-intl/server';
 import {notFound} from 'next/navigation';
+import AICopilot from '@/components/ui/AICopilot';
 
 type Props = {
   children: ReactNode;
@@ -27,6 +28,7 @@ export default async function RootLayout({children, params: {locale}}: Props) {
       <body>
         <NextIntlClientProvider messages={messages}>
           {children}
+          <AICopilot />
         </NextIntlClientProvider>
       </body>
     </html>

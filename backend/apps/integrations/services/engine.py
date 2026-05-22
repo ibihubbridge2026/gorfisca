@@ -286,7 +286,8 @@ class NormalizationEngine:
         }
         
         for class_id in sorted(accounts_by_class.keys()):
-            context += f"{class_names.get(class_id, f'Classe {class_id')}:\n"
+            class_name = class_names.get(class_id, f"Classe {class_id}")
+            context += f"{class_name}:\n"
             for account in accounts_by_class[class_id]:
                 context += f"  - {account.code}: {account.label}\n"
             context += "\n"

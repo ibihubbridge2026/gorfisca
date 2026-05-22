@@ -13,6 +13,24 @@ const authClient = axios.create({
   withCredentials: true,
 })
 
+// Add CSRF token handling
+authClient.interceptors.request.use(async (config) => {
+  // Get CSRF token from cookies
+  const getCookie = (name: string) => {
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop()?.split(';').shift()
+    return null
+  }
+  
+  const csrfToken = getCookie('csrftoken')
+  if (csrfToken && ['post', 'put', 'patch', 'delete'].includes(config.method?.toLowerCase() || '')) {
+    config.headers['X-CSRFToken'] = csrfToken
+  }
+  
+  return config
+})
+
 // Types for auth responses
 interface LoginResponse {
   token: string
@@ -24,7 +42,32 @@ interface LoginResponse {
   }
 }
 
-interface RegisterResponse extends LoginResponse {}
+interface RegisterResponse extends LoginResponse {
+  needs_onboarding?: boolean
+}
+
+// Helper: persist user data in the shape expected by useAuth hook
+function persistUserData(payload: LoginResponse) {
+  if (typeof window === 'undefined') return
+  const u: any = payload.user || {}
+  const org: any = payload.organization || u.organization || {}
+  const userData = {
+    id: String(u.id ?? ''),
+    email: u.email ?? '',
+    name: u.full_name || [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || u.email || '',
+    role: u.role || 'admin',
+    organization: {
+      id: String(org.id ?? ''),
+      name: org.name ?? '',
+      currency: org.currency?.code || org.currency || 'XOF',
+    },
+  }
+  try {
+    localStorage.setItem('userData', JSON.stringify(userData))
+  } catch (e) {
+    console.error('Unable to persist user data', e)
+  }
+}
 
 // Auth Service
 export const authService = {
@@ -32,13 +75,14 @@ export const authService = {
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
       const response = await authClient.post<LoginResponse>(
-        '/api/v1/auth/users/login/',
+        '/auth/users/login/',
         { email, password }
       )
       
-      // Store token
+      // Store token & user profile
       localStorage.setItem('authToken', response.data.token)
-      
+      persistUserData(response.data)
+
       return response.data
     } catch (error) {
       console.error('Login error:', error)
@@ -51,20 +95,20 @@ export const authService = {
     email: string
     username: string
     password: string
-    password_confirm: string
     first_name: string
-    last_name: string
+    last_name?: string
     phone?: string
   }): Promise<RegisterResponse> {
     try {
       const response = await authClient.post<RegisterResponse>(
-        '/api/v1/auth/users/register/',
+        '/auth/users/register/',
         userData
       )
       
-      // Store token
+      // Store token & user profile
       localStorage.setItem('authToken', response.data.token)
-      
+      persistUserData(response.data)
+
       return response.data
     } catch (error) {
       console.error('Registration error:', error)
@@ -79,8 +123,9 @@ export const authService = {
     } catch (error) {
       console.error('Logout error:', error)
     } finally {
-      // Always remove token
+      // Always remove token & user data
       localStorage.removeItem('authToken')
+      localStorage.removeItem('userData')
     }
   },
 
@@ -94,7 +139,7 @@ export const authService = {
       
       const response = await authClient.get('/api/v1/auth/users/me/', {
         headers: {
-          Authorization: `Token ${token}`
+          Authorization: `Bearer ${token}`
         }
       })
       
@@ -123,6 +168,34 @@ export const authService = {
   // Clear token
   clearToken(): void {
     localStorage.removeItem('authToken')
+  },
+
+  // Update organization
+  async updateOrganization(organizationId: string, data: {
+    name?: string
+    legal_identifier?: string
+  }): Promise<any> {
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) {
+        throw new Error('No authentication token found')
+      }
+      
+      const response = await authClient.patch(
+        `/api/organizations/${organizationId}/`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      
+      return response.data
+    } catch (error) {
+      console.error('Update organization error:', error)
+      throw error
+    }
   },
 }
 

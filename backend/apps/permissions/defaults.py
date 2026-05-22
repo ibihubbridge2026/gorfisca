@@ -178,6 +178,7 @@ def create_default_policies():
             'policy_type': 'field_access',
             'effect': 'conditional',
             'resource_type': 'users.User',
+            'actions': ['view', 'edit'],
             'fields': ['salary', 'bank_account', 'personal_data'],
             'conditions': {
                 'roles': ['org_admin', 'super_admin', 'expert_accountant']

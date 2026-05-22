@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .models import Organization
-from .serializers import OrganizationSerializer
+from .models import Organization, OrganizationInvitation
+from .serializers import OrganizationSerializer, OrganizationInvitationSerializer
 
 
 class OrganizationViewSet(viewsets.ModelViewSet):
@@ -71,3 +71,64 @@ class OrganizationViewSet(viewsets.ModelViewSet):
         }
         
         return Response(stats)
+    
+    @action(detail=True, methods=['post'])
+    def invite(self, request, pk=None):
+        """Invite a user to the organization (admin only)"""
+        organization = self.get_object()
+        
+        # Check if user is admin of this organization
+        user_role = getattr(request.user, 'role', 'viewer')
+        if user_role != 'admin' or request.user.organization != organization:
+            return Response(
+                {'detail': 'Seuls les administrateurs peuvent inviter des membres.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        serializer = OrganizationInvitationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # Create invitation
+        invitation = serializer.save(
+            organization=organization,
+            invited_by=request.user
+        )
+        
+        # In production, send email here
+        # For now, return the token for simulation
+        return Response({
+            'invitation': OrganizationInvitationSerializer(invitation).data,
+            'message': f'Invitation envoyée à {invitation.email}',
+            'token': str(invitation.token),  # For simulation purposes
+        }, status=status.HTTP_201_CREATED)
+    
+    @action(detail=True, methods=['get'])
+    def invitations(self, request, pk=None):
+        """Get all invitations for this organization"""
+        organization = self.get_object()
+        
+        # Check if user is admin or accountant
+        user_role = getattr(request.user, 'role', 'viewer')
+        if user_role not in ['admin', 'accountant'] or request.user.organization != organization:
+            return Response(
+                {'detail': 'Vous n\'avez pas la permission de voir les invitations.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        invitations = organization.invitations.all()
+        serializer = OrganizationInvitationSerializer(invitations, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def current(self, request):
+        """Get current user's organization"""
+        user = request.user
+        
+        if not hasattr(user, 'organization') or not user.organization:
+            return Response(
+                {'detail': 'Aucune organisation associée à cet utilisateur.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        serializer = self.get_serializer(user.organization)
+        return Response(serializer.data)

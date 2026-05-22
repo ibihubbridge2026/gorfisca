@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Building } from 'lucide-react'
 import authService from '@/services/api/auth.service'
@@ -27,9 +27,39 @@ export default function LoginPage() {
 
     try {
       await authService.login(email, password)
-      router.push('/fr/accounting')
+      router.push('/fr/dashboard')
     } catch (err: any) {
-      setError(err.response?.data?.detail || authT('loginError'))
+      let errorMessage = authT('loginError')
+      
+      if (err.response?.data) {
+        const errorData = err.response.data
+        
+        if (errorData.detail) {
+          if (errorData.detail.includes('Invalid credentials') || errorData.detail.includes('invalid')) {
+            errorMessage = 'Email ou mot de passe incorrect'
+          } else if (errorData.detail.includes('inactive') || errorData.detail.includes('disabled')) {
+            errorMessage = 'Ce compte est désactivé. Veuillez contacter un administrateur'
+          } else {
+            errorMessage = errorData.detail
+          }
+        } else if (errorData.non_field_errors) {
+          errorMessage = Array.isArray(errorData.non_field_errors) ? errorData.non_field_errors[0] : errorData.non_field_errors
+        } else if (errorData.email) {
+          errorMessage = Array.isArray(errorData.email) ? errorData.email[0] : errorData.email
+        } else if (errorData.password) {
+          errorMessage = Array.isArray(errorData.password) ? errorData.password[0] : errorData.password
+        }
+      } else if (err.message) {
+        if (err.message.includes('404')) {
+          errorMessage = 'Service de connexion indisponible. Veuillez réessayer plus tard.'
+        } else if (err.message.includes('Network Error')) {
+          errorMessage = 'Erreur de connexion au serveur. Vérifiez votre connexion internet.'
+        } else {
+          errorMessage = `Erreur de connexion: ${err.message}`
+        }
+      }
+      
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

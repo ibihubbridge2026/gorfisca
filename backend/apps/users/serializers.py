@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'full_name',
             'phone',
-            'user_type',
+            'role',
             'organization',
             'organization_name',
             'is_active',
@@ -75,10 +75,9 @@ class LoginSerializer(serializers.Serializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    """Serializer for user registration"""
+    """Serializer for user registration - Simplified for 3-second rule"""
     
     password = serializers.CharField(write_only=True, validators=[validate_password])
-    password_confirm = serializers.CharField(write_only=True)
     
     class Meta:
         model = User
@@ -86,12 +85,16 @@ class RegisterSerializer(serializers.ModelSerializer):
             'email',
             'username',
             'password',
-            'password_confirm',
             'first_name',
             'last_name',
             'phone',
-            'user_type'
+            'role'
         ]
+        extra_kwargs = {
+            'role': {'required': False, 'allow_null': True},
+            'last_name': {'required': False, 'allow_blank': True},
+            'phone': {'required': False, 'allow_blank': True}
+        }
     
     def validate_email(self, value):
         """Validate email uniqueness"""
@@ -105,20 +108,17 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Ce nom d'utilisateur existe déjà.")
         return value
     
-    def validate(self, attrs):
-        """Validate password confirmation"""
-        password = attrs.get('password')
-        password_confirm = attrs.get('password_confirm')
-        
-        if password != password_confirm:
-            raise serializers.ValidationError("Les mots de passe ne correspondent pas.")
-        
-        return attrs
-    
     def create(self, validated_data):
-        """Create user with hashed password"""
-        validated_data.pop('password_confirm')
+        """Create user with hashed password - Simplified for 3-second rule"""
         password = validated_data.pop('password')
+        
+        # Set default values for optional fields
+        if 'role' not in validated_data or validated_data['role'] is None:
+            validated_data['role'] = 'viewer'  # Default role, will be updated in view
+        if 'last_name' not in validated_data:
+            validated_data['last_name'] = ''
+        if 'phone' not in validated_data:
+            validated_data['phone'] = ''
         
         user = User.objects.create_user(
             password=password,

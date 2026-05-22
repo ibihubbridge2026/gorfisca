@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { MessageSquare, Star, Send, X } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/Card'
 import feedbackService from '@/services/api/feedback.service'
 

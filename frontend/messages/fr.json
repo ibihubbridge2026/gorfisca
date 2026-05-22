@@ -63,7 +63,11 @@
     "invalidCredentials": "Email ou mot de passe incorrect",
     "accountCreated": "Compte créé avec succès",
     "loginSuccess": "Connexion réussie",
-    "logoutSuccess": "Déconnexion réussie"
+    "logoutSuccess": "Déconnexion réussie",
+    "createAccount": "Créer un compte",
+    "creating": "Création...",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "passwordMismatch": "Les mots de passe ne correspondent pas"
   },
 
   "accounting": {

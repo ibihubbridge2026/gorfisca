@@ -14,7 +14,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/Card'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import aiService, { DocumentAnalysisResponse, DocumentAnalysisData, SuggestedJournalEntry } from '@/services/api/ai.service'

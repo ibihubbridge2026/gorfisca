@@ -17,7 +17,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken')
   if (token) {
-    config.headers.Authorization = `Token ${token}`
+    config.headers.Authorization = `Bearer ${token}`
   }
   return config
 })
@@ -339,6 +339,61 @@ export const reportingService = {
       console.error('Error fetching financial summary:', error)
       throw error
     }
+  }
+}
+
+// Get treasury data (Classe 5: comptes 52 et 57)
+export const getTreasuryData = async (): Promise<{
+  total_treasury: number
+  accounts: Array<{
+    code: string
+    label: string
+    balance: number
+  }>
+}> => {
+  try {
+    const response = await apiClient.get('/api/v1/reporting/treasury/')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching treasury data:', error)
+    throw error
+  }
+}
+
+// Get revenue data (Classe 7: comptes 701100, 706100)
+export const getRevenueData = async (): Promise<{
+  total_revenue: number
+  accounts: Array<{
+    code: string
+    label: string
+    balance: number
+  }>
+}> => {
+  try {
+    const response = await apiClient.get('/api/v1/reporting/revenue/')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching revenue data:', error)
+    throw error
+  }
+}
+
+// Get organization data for currency
+export const getOrganizationData = async (): Promise<{
+  id: string
+  name: string
+  currency: {
+    code: string
+    symbol: string
+    name?: string
+  } | null
+}> => {
+  try {
+    const response = await apiClient.get('/organizations/current/')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching organization data:', error)
+    throw error
   }
 }
 

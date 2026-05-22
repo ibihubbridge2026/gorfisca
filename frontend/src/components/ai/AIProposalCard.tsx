@@ -15,7 +15,7 @@ import {
   ArrowRight,
   Loader2
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/Card'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { formatCurrency, formatDate } from '@/lib/utils'

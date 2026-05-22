@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db import transaction
@@ -15,6 +16,7 @@ from .serializers import (
     AutoMatchSerializer
 )
 from .services import MatchingService, TransactionParserService
+from .matching_engine import MatchingEngineService
 
 
 class BankTransactionViewSet(viewsets.ModelViewSet):
@@ -142,33 +144,39 @@ class BankTransactionViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['get'])
     def potential_matches(self, request, pk=None):
-        """Get potential matches for transaction"""
+        """Get potential matches for transaction using AI matching engine"""
         transaction_obj = self.get_object()
         
         if transaction_obj.status == 'matched':
             return Response({'matches': []})
         
-        matches = MatchingService.find_matches_for_transaction(transaction_obj)
+        # Use the new AI matching engine
+        matches = MatchingEngineService.find_matches_for_transaction(transaction_obj)
         
-        matches_data = []
-        for journal_line, confidence in matches:
-            matches_data.append({
-                'journal_line_id': journal_line.id,
-                'entry_reference': journal_line.entry.reference,
-                'account_code': journal_line.account.code,
-                'account_label': journal_line.account.label,
-                'amount': journal_line.amount,
-                'line_type': journal_line.line_type,
-                'confidence_score': confidence,
-                'entry_date': journal_line.entry.date,
-                'entry_description': journal_line.entry.description
-            })
+        # Update transaction confidence score with best match
+        if matches:
+            transaction_obj.confidence_score = matches[0]['confidence_score']
+            transaction_obj.save()
         
-        return Response({'matches': matches_data})
+        return Response({'matches': matches})
     
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny], authentication_classes=[])
     def bulk_import(self, request):
         """Import transactions from CSV file"""
+        
+        # DEBUG: Inspect headers and user
+        print("DEBUG HEADERS:", request.META.get('HTTP_AUTHORIZATION'))
+        print("DEBUG USER:", request.user)
+        print("DEBUG IS AUTHENTICATED:", request.user.is_authenticated)
+        
+        # Check user role - only admin and accountant can upload
+        user_role = getattr(request.user, 'role', 'viewer')
+        if user_role not in ['admin', 'accountant']:
+            return Response(
+                {'detail': 'Vous n\'avez pas les permissions pour importer des fichiers.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
         if 'file' not in request.FILES:
             return Response(
                 {'detail': 'Aucun fichier fourni.'},
@@ -177,9 +185,17 @@ class BankTransactionViewSet(viewsets.ModelViewSet):
         
         csv_file = request.FILES['file']
         
-        if not csv_file.name.endswith('.csv'):
+        # Check file extension
+        if not csv_file.name.lower().endswith(('.csv', '.xlsx', '.xls')):
             return Response(
-                {'detail': 'Le fichier doit être au format CSV.'},
+                {'detail': 'Le fichier doit être au format CSV ou Excel.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Check file size (max 10MB)
+        if csv_file.size > 10 * 1024 * 1024:
+            return Response(
+                {'detail': 'Le fichier est trop volumineux (max 10MB).'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
@@ -191,47 +207,71 @@ class BankTransactionViewSet(viewsets.ModelViewSet):
             )
             
             serializer = ImportBatchSerializer(import_batch)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({
+                'batch': serializer.data,
+                'message': f'{import_batch.imported_rows} transactions importées avec succès'
+            }, status=status.HTTP_201_CREATED)
             
         except Exception as e:
+            print(f"Import error: {e}")  # Log technical error
             return Response(
-                {'detail': str(e)},
+                {'detail': 'Le format du fichier est incorrect ou incomplet. Veuillez vérifier votre export Mobile Money.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
     
     @action(detail=False, methods=['post'])
     def auto_match(self, request):
-        """Automatically match transactions with high confidence"""
+        """Automatically match transactions with high confidence using AI engine"""
+        # Check user role - only admin and accountant can auto-match
+        user_role = getattr(request.user, 'role', 'viewer')
+        if user_role not in ['admin', 'accountant']:
+            return Response(
+                {'detail': 'Seuls les administrateurs et comptables peuvent utiliser le matching automatique.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
         serializer = AutoMatchSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
         confidence_threshold = serializer.validated_data['confidence_threshold']
-        limit = serializer.validated_data['limit']
         
-        # Get pending transactions and find matches
-        pending_transactions = self.get_queryset().filter(status='pending')[:limit]
-        matches_made = 0
-        
-        for transaction_obj in pending_transactions:
-            matches = MatchingService.find_matches_for_transaction(transaction_obj)
-            
-            # Auto-match if confidence meets threshold
-            if matches and matches[0][1] >= confidence_threshold:
-                journal_line, confidence = matches[0]
-                MatchingService.reconcile_transaction(transaction_obj, journal_line, request.user)
-                matches_made += 1
+        # Use the AI matching engine for auto-matching
+        results = MatchingEngineService.auto_match_transactions(
+            request.user.organization,
+            confidence_threshold
+        )
         
         return Response({
-            'matches_made': matches_made,
+            'matches_made': results['matches_made'],
+            'high_confidence_matches': results['high_confidence_matches'],
             'confidence_threshold': confidence_threshold,
-            'transactions_processed': len(pending_transactions)
+            'total_processed': results['total_processed']
         })
     
     @action(detail=False, methods=['get'])
     def stats(self, request):
-        """Get reconciliation statistics"""
-        stats = MatchingService.get_reconciliation_stats(request.user.organization)
-        return Response(stats)
+        """Get comprehensive reconciliation statistics using AI engine"""
+        # All roles can view stats, but only admin/accountant can see detailed breakdowns
+        user_role = getattr(request.user, 'role', 'viewer')
+        
+        # Get basic stats (available to all roles)
+        ai_stats = MatchingEngineService.get_matching_statistics(request.user.organization)
+        
+        # Add traditional stats for compatibility
+        traditional_stats = MatchingService.get_reconciliation_stats(request.user.organization)
+        
+        # Merge statistics
+        merged_stats = {**traditional_stats, **ai_stats}
+        
+        # Add detailed breakdowns only for admin/accountant
+        if user_role in ['admin', 'accountant']:
+            merged_stats['detailed_breakdown'] = {
+                'high_confidence_rate': (ai_stats['high_confidence_matches'] / ai_stats['total_transactions'] * 100) if ai_stats['total_transactions'] > 0 else 0,
+                'medium_confidence_rate': (ai_stats['medium_confidence_matches'] / ai_stats['total_transactions'] * 100) if ai_stats['total_transactions'] > 0 else 0,
+                'low_confidence_rate': (ai_stats['low_confidence_matches'] / ai_stats['total_transactions'] * 100) if ai_stats['total_transactions'] > 0 else 0,
+            }
+        
+        return Response(merged_stats)
 
 
 class ReconciliationRuleViewSet(viewsets.ModelViewSet):

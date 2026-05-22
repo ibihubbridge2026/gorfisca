@@ -8,22 +8,28 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   --glass-backdrop: blur(10px);
   
-  /* Premium Finance Palette */
-  --night-primary: #0F172A;
-  --night-secondary: #1E293B;
-  --night-tertiary: #334155;
-  --emerald-primary: #10B981;
-  --emerald-secondary: #34D399;
-  --emerald-accent: #6EE7B7;
-  --slate-primary: #475569;
-  --slate-secondary: #64748B;
-  --slate-tertiary: #94A3B8;
+  /* IBIHUB Brand Palette - Vraies couleurs du design original */
+  --ibihub-primary: #006947;
+  --ibihub-primary-container: #00855b;
+  --ibihub-secondary: #006a6a;
+  --ibihub-secondary-container: #90efef;
+  --ibihub-tertiary: #765700;
+  --ibihub-tertiary-container: #956e00;
+  --ibihub-surface: #f9f9fb;
+  --ibihub-surface-container-low: #f3f3f5;
+  --ibihub-surface-container-lowest: #ffffff;
+  --ibihub-background: #f9f9fb;
+  --ibihub-error: #ba1a1a;
+  --ibihub-on-primary: #ffffff;
+  --ibihub-on-surface: #1a1c1d;
+  --ibihub-on-surface-variant: #3e4942;
   
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
-  --gradient-emerald: linear-gradient(135deg, #10B981 0%, #34D399 50%, #6EE7B7 100%);
+  /* IBIHUB Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--ibihub-primary) 0%, var(--ibihub-primary-container) 50%, #006c49 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--ibihub-secondary) 0%, var(--ibihub-secondary-container) 50%, #004f4f 100%);
+  --gradient-tertiary: linear-gradient(135deg, var(--ibihub-tertiary) 0%, var(--ibihub-tertiary-container) 50%, #5c4300 100%);
   --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  --gradient-card: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
+  --gradient-card: linear-gradient(135deg, rgba(0, 105, 71, 0.05) 0%, rgba(0, 133, 91, 0.02) 100%);
   
   /* Shadow System */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -67,9 +73,25 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
 }
 
+/* IBIHUB Specific Styles */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.reconcile-ribbon-primary {
+  border-left: 4px solid var(--ibihub-primary);
+}
+
+.reconcile-ribbon-pending {
+  border-left: 4px solid var(--ibihub-tertiary);
+}
+
 /* Premium Finance Dashboard Styles */
 .dashboard-premium {
-  background: var(--gradient-primary);
+  background: var(--ibihub-background);
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
