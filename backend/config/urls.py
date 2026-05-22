@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/v1/ai/', include('apps.ai_assistant.urls')),
     path('api/v1/feedback/', include('apps.feedback.urls')),
     path('api/v1/core/', include('apps.core.urls')),
+    path('api/v1/integrations/', include('apps.integrations.urls')),
     path('api/v1/', include('apps.reporting.urls')),
 ]
 

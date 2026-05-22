@@ -9,7 +9,7 @@ import { ReconcileRibbon } from '@/components/ui/StatusBadge'
 import { Spinner, LoadingCard, LoadingTable } from '@/components/ui/Spinner'
 import { Account } from '@/types/accounting'
 import { formatCurrency } from '@/lib/utils'
-import { Download, Add, TrendingUp, AccountBalance, PieChart } from 'lucide-react'
+import { Download, Plus, TrendingUp, Wallet, PieChart } from 'lucide-react'
 import accountingService from '@/services/api/accounting.service'
 
 export default function AccountingPage() {
@@ -139,8 +139,8 @@ export default function AccountingPage() {
               <Download className="w-4 h-4" />
               Export PDF
             </Button>
-            <Button variant="primary">
-              <Add className="w-4 h-4" />
+            <Button variant="default">
+              <Plus className="w-4 h-4" />
               Nouveau Compte
             </Button>
           </div>
@@ -164,7 +164,7 @@ export default function AccountingPage() {
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-primary">
-                  <AccountBalance className="w-6 h-6" />
+                  <Wallet className="w-6 h-6" />
                 </div>
               </div>
               <div className="mt-8 pt-6 border-t border-surface-container-low flex items-center justify-between">

@@ -249,7 +249,6 @@
     "summary": "Résumé",
     "keyMetrics": "Indicateurs clés",
     "totalRevenue": "Revenus totaux",
-    "totalExpenses": "Charges totales",
     "cashBalance": "Solde de trésorerie",
     "workingCapital": "Fonds de roulement",
     "profit": "Bénéfice",
@@ -373,5 +372,82 @@
     "updated": "Mis à jour",
     "created": "Créé",
     "modified": "Modifié"
+  },
+
+  "integrations": {
+    "wizard": {
+      "title": "Assistant d'Importation",
+      "steps": {
+        "upload": "Importation",
+        "upload_description": "Upload de vos données",
+        "review": "Validation IA",
+        "review_description": "Revoyez les suggestions",
+        "finalization": "Finalisation",
+        "finalization_description": "Générez les écritures"
+      },
+      "upload": {
+        "title": "Importer vos données",
+        "description": "Uploadez un fichier Excel, CSV ou JSON pour commencer le processus d'importation",
+        "drag_drop_text": "Glissez-déposez votre fichier ici",
+        "browse_text": "ou cliquez pour parcourir",
+        "processing": "Traitement en cours...",
+        "supported_formats": "Formats supportés",
+        "source_name_label": "Nom de la source",
+        "source_name_placeholder": "Nommez cette source d'importation",
+        "upload_button": "Importer",
+        "uploading_button": "Importation...",
+        "cancel_button": "Annuler"
+      },
+      "review": {
+        "title": "Revue et correction IA",
+        "description": "L'IA a suggéré les comptes OHADA. Vérifiez et corrigez si nécessaire.",
+        "validate_all": "Tout valider (>90%)",
+        "validate_selected": "Valider la sélection",
+        "confidence_high": "Haute confiance",
+        "confidence_medium": "Moyenne confiance",
+        "confidence_low": "Faible confiance",
+        "account_selector_placeholder": "Sélectionner un compte",
+        "account_search_placeholder": "Rechercher un compte...",
+        "columns": {
+          "description": "Description",
+          "amount": "Montant",
+          "debit": "Débit",
+          "credit": "Crédit",
+          "confidence": "Confiance"
+        }
+      },
+      "finalization": {
+        "title": "Finalisation",
+        "description": "Vérifiez le résumé et générez les écritures comptables",
+        "summary_title": "Résumé de l'importation",
+        "ready_transactions": "Prêtes pour injection",
+        "generate_button": "Générer les écritures",
+        "generating_button": "Génération...",
+        "success_title": "Importation réussie !",
+        "success_message": "écritures comptables ont été générées avec succès",
+        "success_detail": "Les écritures sont maintenant disponibles dans votre grand livre"
+      },
+      "errors": {
+        "duplicate_file": "Ce fichier a déjà été importé",
+        "invalid_format": "Format de fichier non supporté",
+        "file_too_large": "Le fichier est trop volumineux (max 50MB)",
+        "processing_failed": "Le traitement a échoué",
+        "validation_failed": "La validation a échoué"
+      },
+      "toasts": {
+        "upload_success": "Fichier importé avec succès",
+        "upload_error": "Erreur lors de l'importation",
+        "validation_success": "Transactions validées avec succès",
+        "validation_error": "Erreur lors de la validation",
+        "generation_success": "Écritures générées avec succès",
+        "generation_error": "Erreur lors de la génération des écritures"
+      }
+    },
+    "account_selector": {
+      "placeholder": "Sélectionner un compte",
+      "search_placeholder": "Rechercher un compte...",
+      "no_results": "Aucun compte trouvé",
+      "loading": "Chargement des comptes..."
+    }
   }
 }
