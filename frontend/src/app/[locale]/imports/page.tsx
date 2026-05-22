@@ -20,6 +20,7 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
 import axios from 'axios'
+import FileAndImageUploader from '@/components/reconciliation/FileAndImageUploader'
 
 // Colonnes attendues (toutes normalisées en minuscules, sans espaces)
 const REQUIRED_HEADER_ALIASES: Record<string, string[]> = {
@@ -106,6 +107,7 @@ export default function ImportsPage() {
   const { user, canImportData } = useAuth()
   const [currentStep, setCurrentStep] = useState<Step>('upload')
   const [uploadedFile, setUploadedFile] = useState<ImportFile | null>(null)
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle')
@@ -117,6 +119,7 @@ export default function ImportsPage() {
   // Réinitialise complètement la zone d'upload pour permettre un nouveau drop
   const resetDropzone = useCallback(() => {
     setUploadedFile(null)
+    setSelectedImage(null)
     setUploadProgress(0)
     setUploadStatus('idle')
     setError(null)
@@ -195,6 +198,11 @@ export default function ImportsPage() {
       // Créer FormData pour l'upload
       const formData = new FormData()
       formData.append('file', file)
+      
+      // Ajouter l'image si présente
+      if (selectedImage) {
+        formData.append('receipt_image', selectedImage)
+      }
 
       // Appel API réel vers l'endpoint Django
       const token = localStorage.getItem('authToken');
@@ -221,6 +229,11 @@ export default function ImportsPage() {
         : []
       setMappedTransactions(realMapped)
       setUploadStatus('success')
+      
+      // Debug: s'assurer que les états sont corrects
+      console.log('Upload status:', 'success')
+      console.log('Uploaded file:', uploadedFile)
+      console.log('Is processing:', false)
 
     } catch (err: any) {
       console.error('Erreur upload:', err)
@@ -382,132 +395,87 @@ export default function ImportsPage() {
                     Ingestion & Sécurisation
                   </h2>
                   
-                  {/* Zone de Drag & Drop */}
-                  <div
-                    className={cn(
-                      "border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300",
-                      isDragging ? "border-emerald-400 bg-emerald-50" : "border-slate-300 bg-slate-50",
-                      uploadedFile && "border-emerald-300 bg-emerald-50"
-                    )}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                  >
-                    <div className="flex flex-col items-center">
-                      <Upload className={cn(
-                        "w-16 h-16 mb-4 transition-colors duration-300",
-                        isDragging ? "text-emerald-500" : "text-slate-400",
-                        uploadedFile && "text-emerald-500"
-                      )} />
-                      
-                      {!uploadedFile ? (
-                        <>
-                          <p className="text-lg font-medium text-slate-700 mb-2">
-                            Glissez votre fichier ici
-                          </p>
-                          <p className="text-sm text-slate-500 mb-4">
-                            ou cliquez pour parcourir
-                          </p>
-                          <p className="text-xs text-slate-400 mb-4">
-                            Excel, CSV, MT940, Mobile Money supportés
-                          </p>
-                          <input
-                            ref={fileInputRef}
-                            type="file"
-                            onChange={handleFileInputChange}
-                            className="hidden"
-                            id="file-upload"
-                            accept=".xlsx,.xls,.csv,.txt,.sta"
-                            disabled={!canImportData()}
-                          />
-                          <label
-                            htmlFor="file-upload"
-                            className={cn(
-                              "px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200",
-                              canImportData() 
-                                ? "bg-emerald-500 text-white hover:bg-emerald-600" 
-                                : "bg-slate-300 text-slate-500 cursor-not-allowed"
-                            )}
-                          >
-                            {canImportData() ? "Choisir un fichier" : "Import non autorisé"}
-                          </label>
-                        </>
-                      ) : (
+                  {/* Nouveau composant d'upload double */}
+                  <FileAndImageUploader
+                    onFileSelected={(file) => {
+                      console.log('File sélectionné dans callback:', file.name)
+                      setUploadedFile({
+                        name: file.name,
+                        size: file.size,
+                        type: file.type
+                      })
+                      console.log('UploadedFile mis à jour:', file.name)
+                      // Lancer l'upload automatiquement quand un fichier est sélectionné
+                      handleFileUpload(file)
+                    }}
+                    onImageSelected={(file) => {
+      setSelectedImage(file)
+      console.log('Image reçue dans imports/page.tsx:', file.name)
+    }}
+                  />
+                  
+                  {/* Boutons d'action après upload */}
+                  {uploadedFile && (
+                    <div className="mt-6 space-y-3">
+                      {isProcessing && (
                         <div className="w-full">
-                          <div className="flex items-center justify-center mb-4">
-                            <FileText className="w-8 h-8 text-emerald-500 mr-3" />
-                            <div className="text-left">
-                              <p className="font-medium text-slate-700">{uploadedFile.name}</p>
-                              <p className="text-sm text-slate-500">
-                                {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
-                              </p>
-                            </div>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-slate-600">Traitement en cours...</span>
+                            <span className="text-sm text-emerald-600">{uploadProgress}%</span>
                           </div>
-                          
-                          {isProcessing && (
-                            <div className="mb-4">
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-slate-600">Traitement en cours...</span>
-                                <span className="text-sm text-emerald-600">{uploadProgress}%</span>
-                              </div>
-                              <div className="w-full bg-slate-200 rounded-full h-2">
-                                <div 
-                                  className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
-                                  style={{ width: `${uploadProgress}%` }}
-                                />
-                              </div>
-                            </div>
-                          )}
-                          
-                          {uploadedFile.sha256 && (
-                            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 mb-4">
-                              <div className="flex items-center">
-                                <Shield className="w-5 h-5 text-emerald-600 mr-2" />
-                                <div className="text-left">
-                                  <p className="text-sm font-medium text-emerald-800">
-                                    Fingerprint SHA-256 généré
-                                  </p>
-                                  <p className="text-xs text-emerald-600 font-mono">
-                                    {uploadedFile.sha256}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {!isProcessing && uploadStatus === 'success' && (
-                            <button
-                              onClick={proceedToReview}
-                              className="w-full px-6 py-3 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors duration-200 flex items-center justify-center"
-                            >
-                              Continuer vers la revue IA
-                              <ArrowRight className="w-5 h-5 ml-2" />
-                            </button>
-                          )}
-
-                          {!isProcessing && uploadStatus === 'error' && (
-                            <button
-                              onClick={resetDropzone}
-                              className="w-full px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors duration-200 flex items-center justify-center font-medium"
-                            >
-                              <RefreshCw className="w-5 h-5 mr-2" />
-                              Changer de fichier
-                            </button>
-                          )}
+                          <div className="w-full bg-slate-200 rounded-full h-2">
+                            <div 
+                              className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${uploadProgress}%` }}
+                            />
+                          </div>
                         </div>
                       )}
-                    
-                    {/* Affichage des erreurs */}
-                    {error && (
-                      <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
-                        <div className="flex items-center">
-                          <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
-                          <p className="text-sm text-red-800">{error}</p>
-                        </div>
+                      
+                      {/* Debug: Afficher l'état actuel */}
+                      <div className="text-xs text-slate-500 bg-slate-100 p-2 rounded">
+                        Debug: isProcessing={isProcessing.toString()}, uploadStatus={uploadStatus}, hasFile={!!uploadedFile}
+                        {uploadedFile && `, fileName=${uploadedFile.name}`}
                       </div>
-                    )}
+                      
+                      {/* Debug: Afficher l'état de l'image */}
+                      {selectedImage && (
+                        <div className="text-xs text-emerald-600 bg-emerald-50 p-2 rounded">
+                          Image sélectionnée: {selectedImage.name} ({(selectedImage.size / 1024 / 1024).toFixed(2)}MB)
+                        </div>
+                      )}
+                      
+                      {!isProcessing && uploadStatus === 'success' && (
+                        <button
+                          onClick={proceedToReview}
+                          className="w-full px-6 py-3 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors duration-200 flex items-center justify-center"
+                        >
+                          Continuer vers la revue IA
+                          <ArrowRight className="w-5 h-5 ml-2" />
+                        </button>
+                      )}
+
+                      {!isProcessing && uploadStatus === 'error' && (
+                        <button
+                          onClick={resetDropzone}
+                          className="w-full px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors duration-200 flex items-center justify-center font-medium"
+                        >
+                          <RefreshCw className="w-5 h-5 mr-2" />
+                          Changer de fichier
+                        </button>
+                      )}
                     </div>
-                  </div>
+                  )}
+                  
+                  {/* Affichage des erreurs */}
+                  {error && (
+                    <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+                      <div className="flex items-center">
+                        <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
+                        <p className="text-sm text-red-800">{error}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}

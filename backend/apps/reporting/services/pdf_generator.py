@@ -426,7 +426,7 @@ class PDFReportGenerator:
         buffer.close()
         
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="facture_{invoice_data.get(\"number\", \"unknown\")}.pdf"'
+        response['Content-Disposition'] = f'attachment; filename="facture_{invoice_data.get("number", "unknown")}.pdf"'
         response.write(pdf)
         
         return response

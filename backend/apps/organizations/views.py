@@ -124,6 +124,10 @@ class OrganizationViewSet(viewsets.ModelViewSet):
         """Get current user's organization"""
         user = request.user
         
+        print(f"DEBUG: User {user.email}, has organization attr: {hasattr(user, 'organization')}")
+        if hasattr(user, 'organization'):
+            print(f"DEBUG: Organization value: {user.organization}")
+        
         if not hasattr(user, 'organization') or not user.organization:
             return Response(
                 {'detail': 'Aucune organisation associée à cet utilisateur.'},

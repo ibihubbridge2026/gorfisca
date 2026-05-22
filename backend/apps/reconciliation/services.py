@@ -15,7 +15,7 @@ class TransactionParserService:
     """Service for parsing CSV bank transaction files"""
     
     @staticmethod
-    def parse_csv_file(csv_file, organization, created_by) -> ImportBatch:
+    def parse_csv_file(csv_file, organization, created_by, receipt_image=None) -> ImportBatch:
         """
         Parse CSV file and create bank transactions
         
@@ -45,7 +45,10 @@ class TransactionParserService:
                 try:
                     transaction_data = TransactionParserService.parse_row(row, batch_id, organization)
                     if transaction_data:
-                        transactions.append(transaction_data)
+                        # Add receipt image to the first transaction if provided
+                        if receipt_image and len(transactions) == 0:
+                            transaction_data['receipt_image'] = receipt_image
+                        transactions.append(BankTransaction(**transaction_data))
                 except Exception as e:
                     failed_rows += 1
                     print(f"Error parsing row {row_num}: {e}")
@@ -111,7 +114,15 @@ class TransactionParserService:
         
         # Generate reference if not provided
         if not reference:
-            reference = f"AUTO_{transaction_date.strftime('%Y%m%d')}_{uuid.uuid4().hex[:8].upper()}"
+            reference = f"AUTO_{transaction_date.strftime('%Y%m%d')}_{uuid.uuid4().hex[:12].upper()}"
+        else:
+            # Si une référence est fournie, ajouter un suffixe unique pour éviter les doublons
+            from .models import BankTransaction
+            original_ref = reference
+            counter = 1
+            while BankTransaction.objects.filter(reference=reference, organization=organization).exists():
+                reference = f"{original_ref}_DUPLICATE_{counter}"
+                counter += 1
         
         return {
             'organization': organization,

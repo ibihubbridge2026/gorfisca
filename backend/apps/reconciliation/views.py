@@ -166,10 +166,15 @@ class BankTransactionViewSet(viewsets.ModelViewSet):
         
         return Response({'matches': matches})
     
-    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['post'], url_path='upload', permission_classes=[permissions.IsAuthenticated])
     @throttle_classes([BulkImportThrottle])
     def bulk_import(self, request):
         """Import transactions from CSV file - SECURED: Auth required"""
+        
+        # DEBUG: Inspect headers and user
+        print("DEBUG HEADERS:", request.META.get('HTTP_AUTHORIZATION'))
+        print("DEBUG USER:", request.user)
+        print("DEBUG IS AUTHENTICATED:", request.user.is_authenticated)
         
         # Check user role - only admin and accountant can upload
         user_role = getattr(request.user, 'role', 'viewer')
@@ -179,33 +184,71 @@ class BankTransactionViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN
             )
         
-        if 'file' not in request.FILES:
+        csv_file = request.FILES.get('file')
+        receipt_image = request.FILES.get('receipt_image')
+        
+        # Vérifier qu'au moins un fichier est fourni (CSV ou image)
+        if not csv_file and not receipt_image:
             return Response(
-                {'detail': 'Aucun fichier fourni.'},
+                {'detail': 'Veuillez fournir un fichier CSV ou une image de reçu.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        csv_file = request.FILES['file']
+        # Si un fichier CSV est fourni, valider son format
+        if csv_file:
+            # Check file extension
+            if not csv_file.name.lower().endswith(('.csv', '.xlsx', '.xls')):
+                return Response(
+                    {'detail': 'Le fichier doit être au format CSV ou Excel.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Check file size (max 10MB)
+            if csv_file.size > 10 * 1024 * 1024:
+                return Response(
+                    {'detail': 'Le fichier est trop volumineux (max 10MB).'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         
-        # Check file extension
-        if not csv_file.name.lower().endswith(('.csv', '.xlsx', '.xls')):
+        # Check receipt image size if provided (max 5MB)
+        if receipt_image and receipt_image.size > 5 * 1024 * 1024:
             return Response(
-                {'detail': 'Le fichier doit être au format CSV ou Excel.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        # Check file size (max 10MB)
-        if csv_file.size > 10 * 1024 * 1024:
-            return Response(
-                {'detail': 'Le fichier est trop volumineux (max 10MB).'},
+                {'detail': 'L\'image du reçu est trop volumineuse (max 5MB).'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
         try:
+            # Si seulement une image est fournie, créer une transaction simple
+            if not csv_file and receipt_image:
+                # Créer une transaction avec juste l'image (à traiter manuellement plus tard)
+                from .models import BankTransaction
+                import uuid
+                from django.utils import timezone
+                
+                transaction = BankTransaction.objects.create(
+                    organization=request.user.organization,
+                    date=timezone.now().date(),
+                    description=f"Reçu Mobile Money - {receipt_image.name}",
+                    amount=0,  # À remplir manuellement
+                    transaction_type='credit',
+                    reference=f"IMG_{timezone.now().strftime('%Y%m%d')}_{uuid.uuid4().hex[:12].upper()}",
+                    receipt_image=receipt_image,
+                    created_by=request.user,
+                    import_batch_id=f"IMG_IMPORT_{timezone.now().strftime('%Y%m%d_%H%M%S')}"
+                )
+                
+                return Response({
+                    'message': 'Image de reçu importée avec succès. Veuillez compléter les informations de la transaction.',
+                    'transaction_id': transaction.id,
+                    'image_uploaded': True
+                }, status=status.HTTP_201_CREATED)
+            
+            # Si un CSV est fourni, procéder au parsing normal
             import_batch = TransactionParserService.parse_csv_file(
                 csv_file, 
                 request.user.organization, 
-                request.user
+                request.user,
+                receipt_image
             )
             
             serializer = ImportBatchSerializer(import_batch)

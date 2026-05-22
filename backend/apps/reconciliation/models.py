@@ -81,6 +81,15 @@ class BankTransaction(models.Model):
         help_text='Notes sur la réconciliation'
     )
     
+    # Receipt image
+    receipt_image = models.ImageField(
+        upload_to='receipts/',
+        null=True,
+        blank=True,
+        verbose_name='Image du reçu',
+        help_text='Capture d\'écran du reçu Mobile Money'
+    )
+    
     # Import tracking
     import_batch_id = models.CharField(
         max_length=50,

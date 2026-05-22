@@ -98,6 +98,7 @@ export const authService = {
     first_name: string
     last_name?: string
     phone?: string
+    company_name?: string
   }): Promise<RegisterResponse> {
     try {
       const response = await authClient.post<RegisterResponse>(
@@ -137,7 +138,7 @@ export const authService = {
         throw new Error('No authentication token found')
       }
       
-      const response = await authClient.get('/api/v1/auth/users/me/', {
+      const response = await authClient.get('/auth/users/me/', {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -38,7 +38,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
-    'ratelimit',
+    # 'django_ratelimit',  # Temporarily disabled for development
 ]
 
 LOCAL_APPS = [
@@ -136,7 +136,6 @@ else:
             'LOCATION': 'gorfisca-local-cache',
         }
     }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

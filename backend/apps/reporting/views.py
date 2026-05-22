@@ -423,7 +423,8 @@ class ReportingViewSet(TreasuryRevenueViewSetMixin, viewsets.ViewSet):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def _get_income_statement_summary(self, organization, start_date, end_date):
-
+        pass
+    
     @action(detail=False, methods=['get'], url_path='export-balance-pdf')
     def export_balance_pdf(self, request):
         """

@@ -18,7 +18,8 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    firstName: ''
+    firstName: '',
+    companyName: ''
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -49,7 +50,8 @@ export default function RegisterPage() {
         password: formData.password,
         first_name: formData.firstName,
         last_name: '', // Nom vide pour simplifier
-        phone: '' // Téléphone vide pour simplifier
+        phone: '', // Téléphone vide pour simplifier
+        company_name: formData.companyName // Ajouter le nom de l'entreprise
       })
       
       // Check if onboarding is needed
@@ -154,6 +156,25 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     className="w-full bg-surface-container-low border-none rounded-full pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
                     placeholder="Votre prénom"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Company Name Field */}
+              <div>
+                <label className="block text-sm font-medium text-on-surface mb-2">
+                  Nom de l'entreprise
+                </label>
+                <div className="relative">
+                  <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+                  <input
+                    type="text"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleChange}
+                    className="w-full bg-surface-container-low border-none rounded-full pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
+                    placeholder="Nom de votre entreprise"
                     required
                   />
                 </div>

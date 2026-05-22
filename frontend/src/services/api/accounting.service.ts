@@ -164,7 +164,7 @@ export const accountingService = {
   }): Promise<JournalEntry[]> {
     try {
       const response = await apiClient.get<ApiResponse<JournalEntry>>(
-        '/api/v1/accounting/journal-entries/',
+        '/accounting/journal-entries/',
         { params }
       )
       return response.data.results
@@ -178,7 +178,7 @@ export const accountingService = {
   async createJournalEntry(entryData: Partial<JournalEntry>): Promise<JournalEntry> {
     try {
       const response = await apiClient.post<JournalEntry>(
-        '/api/v1/accounting/journal-entries/',
+        '/accounting/journal-entries/',
         entryData
       )
       return response.data

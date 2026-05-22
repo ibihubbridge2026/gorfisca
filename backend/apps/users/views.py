@@ -63,18 +63,21 @@ class UserViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def login(self, request):
-        """Login user and return token"""
+        """Login user and return JWT token"""
+        from rest_framework_simplejwt.tokens import RefreshToken
+        
         serializer = LoginSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         
         user = serializer.validated_data['user']
         login(request, user)
         
-        # Get or create token
-        token, created = Token.objects.get_or_create(user=user)
+        # Generate JWT tokens (compatible with SimpleJWT in REST_FRAMEWORK config)
+        refresh = RefreshToken.for_user(user)
         
         return Response({
-            'token': token.key,
+            'token': str(refresh.access_token),
+            'refresh': str(refresh),
             'user': UserSerializer(user).data
         })
     
@@ -105,6 +108,7 @@ class UserViewSet(viewsets.ModelViewSet):
         
         # Check for invitation token
         invitation_token = request.data.get('invitation_token')
+        company_name = request.data.get('company_name', '')
         organization = None
         
         if invitation_token:
@@ -141,7 +145,7 @@ class UserViewSet(viewsets.ModelViewSet):
             import uuid
             
             # Create personalized organization
-            org_name = f"Entreprise de {user.first_name}" if user.first_name else "Mon Entreprise"
+            org_name = company_name if company_name else f"Entreprise de {user.first_name}" if user.first_name else "Mon Entreprise"
             # Generate unique placeholder legal_identifier (will be set in onboarding/settings)
             placeholder_legal_id = f"PENDING-{uuid.uuid4().hex[:12].upper()}"
             organization = Organization.objects.create(
@@ -156,12 +160,14 @@ class UserViewSet(viewsets.ModelViewSet):
         
         user.save()
         
-        # Login and return token
+        # Login and return JWT token
+        from rest_framework_simplejwt.tokens import RefreshToken
         login(request, user)
-        token, created = Token.objects.get_or_create(user=user)
+        refresh = RefreshToken.for_user(user)
         
         return Response({
-            'token': token.key,
+            'token': str(refresh.access_token),
+            'refresh': str(refresh),
             'user': UserSerializer(user).data,
             'organization': {
                 'id': organization.id,
