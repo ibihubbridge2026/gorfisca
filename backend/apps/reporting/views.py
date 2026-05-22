@@ -14,6 +14,7 @@ from apps.invoicing.models import Invoice, InvoiceItem
 from apps.reconciliation.models import BankTransaction
 from apps.core.ai_client import get_ai_client
 from .services.integrity_service import IntegrityService
+from .services.pdf_generator import PDFReportGenerator
 from .views_extended import TreasuryRevenueViewSetMixin
 
 
@@ -421,6 +422,46 @@ class ReportingViewSet(TreasuryRevenueViewSetMixin, viewsets.ViewSet):
                 'message': 'Erreur lors de la désactivation du mode maintenance'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+    def _get_income_statement_summary(self, organization, start_date, end_date):
+
+    @action(detail=False, methods=['get'], url_path='export-balance-pdf')
+    def export_balance_pdf(self, request):
+        """
+        Génère le Bilan PDF conforme OHADA pour l'organisation de l'utilisateur
+        Query params: fiscal_year (optionnel, défaut: année en cours)
+        """
+        try:
+            from apps.accounting.services.balance_sheet_service import BalanceSheetService
+            
+            organization = request.user.organization
+            
+            # Récupérer l'année fiscale depuis les query params
+            fiscal_year = request.query_params.get('fiscal_year')
+            if fiscal_year:
+                fiscal_year = int(fiscal_year)
+            else:
+                fiscal_year = datetime.now().year
+            
+            # Récupérer les données du bilan via le service
+            balance_service = BalanceSheetService()
+            balance_data = balance_service.calculate_balance_sheet(organization.id, fiscal_year)
+            
+            # Générer le PDF avec le service PDF
+            pdf_generator = PDFReportGenerator()
+            response = pdf_generator.generate_balance_sheet(
+                organization=organization,
+                fiscal_year=fiscal_year,
+                data=balance_data
+            )
+            
+            return response
+            
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'message': 'Erreur lors de la génération du bilan PDF'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     def _get_income_statement_summary(self, organization, start_date, end_date):
         """Get summarized income statement data"""
         # Revenue (Class 7) - Only include validated entries

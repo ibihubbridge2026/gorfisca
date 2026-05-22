@@ -1,8 +1,8 @@
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, throttle_classes
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.permissions import AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db import transaction
@@ -17,6 +17,12 @@ from .serializers import (
 )
 from .services import MatchingService, TransactionParserService
 from .matching_engine import MatchingEngineService
+from apps.permissions.permissions import IsOrgAdmin, IsAccountant, HasMinimumRoleLevel
+class BulkImportThrottle(UserRateThrottle):
+    """Rate limiter spécifique pour les imports en masse"""
+    scope = 'bulk_import'
+
+
 
 
 class BankTransactionViewSet(viewsets.ModelViewSet):
@@ -160,14 +166,10 @@ class BankTransactionViewSet(viewsets.ModelViewSet):
         
         return Response({'matches': matches})
     
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny], authentication_classes=[])
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @throttle_classes([BulkImportThrottle])
     def bulk_import(self, request):
-        """Import transactions from CSV file"""
-        
-        # DEBUG: Inspect headers and user
-        print("DEBUG HEADERS:", request.META.get('HTTP_AUTHORIZATION'))
-        print("DEBUG USER:", request.user)
-        print("DEBUG IS AUTHENTICATED:", request.user.is_authenticated)
+        """Import transactions from CSV file - SECURED: Auth required"""
         
         # Check user role - only admin and accountant can upload
         user_role = getattr(request.user, 'role', 'viewer')
