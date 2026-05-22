@@ -627,27 +627,41 @@ npm run dev
 
 ## ✅ Fonctionnalités Implémentées
 
-### **Core Features**
-- ✅ **Authentification multi-tenant** avec Token DRF
-- ✅ **Comptabilité OHADA** complète (classes 1-8)
-- ✅ **Facturation** avec numérotation séquentielle
-- ✅ **Réconciliation bancaire** avec Magic Match IA
-- ✅ **Rapports OHADA** (Bilan, Compte Résultat, etc.)
-- ✅ **Assistant IA** flottant avec analyse documents
+### **Core Features - Finance-Grade**
+- ✅ **Authentification JWT** avec SimpleJWT (Access 15min, Refresh 7j)
+- ✅ **Comptabilité OHADA** stricte avec validations automatiques
+- ✅ **Facturation** multi-devises avec calculs fiscaux
+- ✅ **Réconciliation bancaire** avec Magic Match IA + heuristique
+- ✅ **Rapports OHADA** (Bilan, Compte de Résultat, Balance)
+- ✅ **Assistant IA** flottant avec analyse documents + feedback
+
+### **Sécurité & Audit**
+- ✅ **Audit complet** avec snapshots Before/After + IP tracking
+- ✅ **RBAC granulaire** : 8 rôles hiérarchiques + policies conditionnelles
+- ✅ **Permissions multi-niveaux** : Expert-Comptable, Comptable, Auditeur
+- ✅ **Validation Expert-Comptable** : Score conformité 0-100
+- ✅ **Blockchain immutabilité** : Hash chaîné des écritures
 
 ### **AI Integration**
-- ✅ **Mistral AI** pour analyse comptable
+- ✅ **Mistral AI** pour analyse comptable avec fallback heuristique
 - ✅ **OCR** sur PDF/images (PyPDF2 + Tesseract)
-- ✅ **Suggestion écritures** automatiques
-- ✅ **Magic Match** OHADA-aware pour réconciliation
-- ✅ **Toast notifications** avec invalidation queries
+- ✅ **Suggestion écritures** automatiques avec validation OHADA
+- ✅ **Magic Match** OHADA-aware pour réconciliation bancaire
+- ✅ **Feedback utilisateur** : Système de notation suggestions IA
+
+### **Multi-Pays & Multi-Devises**
+- ✅ **Moteur Fiscal** : 17 pays OHADA (Sénégal, Bénin, CI, etc.)
+- ✅ **Calculateurs taxes** : TVA par pays (18%/10%/5%/0%)
+- ✅ **Taux de change** : Historisés avec validation automatique
+- ✅ **Support multi-devises** : XOF, EUR, USD avec conversions
+- ✅ **Déclarations fiscales** : Périodicités automatiques
 
 ### **Frontend Features**
-- ✅ **Next.js 14** avec TypeScript
+- ✅ **Next.js 14** avec TypeScript et App Router
 - ✅ **Material Design 3** avec Tailwind CSS
-- ✅ **TanStack Query** pour gestion état
-- ✅ **Framer Motion** pour animations
-- ✅ **Internationalisation** next-intl
+- ✅ **TanStack Query** pour gestion état cache
+- ✅ **Framer Motion** pour animations fluides
+- ✅ **Internationalisation** next-intl (français/anglais)
 - ✅ **Dashboard responsive** avec KPIs temps réel
 
 ---
@@ -658,11 +672,16 @@ npm run dev
 gorfisca/
 ├── backend/                 # Django REST API
 │   ├── apps/               # Modules métier
-│   │   ├── accounting/      # Comptabilité OHADA
-│   │   ├── invoicing/      # Facturation
-│   │   ├── reconciliation/ # Réconciliation
-│   │   ├── reporting/      # Rapports
-│   │   ├── ai_assistant/   # Assistant IA
+│   │   ├── accounting/      # Comptabilité OHADA + Validations
+│   │   ├── invoicing/      # Facturation multi-devises
+│   │   ├── reconciliation/ # Réconciliation bancaire IA
+│   │   ├── reporting/      # Rapports OHADA
+│   │   ├── ai_assistant/   # Assistant IA + Feedback
+│   │   ├── audit/          # Audit complet + Snapshots
+│   │   ├── permissions/    # RBAC + Policies
+│   │   ├── fiscal/         # Moteur fiscal multi-pays
+│   │   ├── currencies/     # Multi-devises + Taux change
+│   │   ├── core/           # Services partagés + Health
 │   │   ├── users/          # Gestion utilisateurs
 │   │   └── organizations/   # Multi-tenant
 │   ├── config/             # Configuration Django
@@ -733,22 +752,80 @@ docker-compose up -d
 
 ---
 
+## 🏛️ Architecture Strong MVP Finance-Grade
+
+### **Stack Technique Robuste**
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend       │    │   PostgreSQL    │
+│   Next.js 14    │◄──►│   Django 6.0    │◄──►│   + Indexes     │
+│   + JWT Auth    │    │   + SimpleJWT   │    │   + Constraints  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Multi-Devise  │    │   Fiscal Engine │    │   Audit Trail   │
+│   + Exchange    │    │   + 17 Pays     │    │   + Snapshots   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### **Modules Core Finance-Grade**
+- **🔐 Authentification** : JWT avec rotation (Access 15min, Refresh 7j)
+- **👥 RBAC** : 8 rôles hiérarchiques + policies conditionnelles
+- **� Audit** : Snapshots Before/After + IP tracking complet
+- **💰 Multi-Devises** : Taux de change historisés + conversions
+- **🏛️ Fiscal** : Moteur multi-pays avec calculateurs spécialisés
+- **⚖️ OHADA** : Validations strictes + Expert-Comptable review
+- **🤖 IA** : Mistral AI + fallback heuristique + feedback loop
+
+### **Validations OHADA Strictes**
+- **Équilibre comptable** : Débit = Crédit obligatoire
+- **Codes comptables** : Classes 1-8 validées automatiquement
+- **Plan comptable** : Cohérence hiérarchique des comptes
+- **Double entrée** : Règles comptabilité en partie double
+- **Expert review** : Score conformité 0-100 + validation automatique
+
+### **Sécurité Entreprise**
+- **Audit complet** : Traçabilité blockchain-style des écritures
+- **Permissions granulaires** : Policies par ressource + temps réel
+- **Cache sécurisé** : 15 minutes TTL invalidation automatique
+- **Multi-tenant isolé** : Séparation stricte des données
+- **Rate limiting** : Protection contre abus et attaques
+
+---
+
 ## 📈 Statut Actuel
 
-**Version**: 1.0.0 - Production Ready  
+**Version**: 2.0.0 - Strong MVP Finance-Grade  
 **Date**: 22 mai 2026  
-**Statut**: ✅ Terminé et fonctionnel  
+**Statut**: ✅ Production Ready - Finance-Grade  
+
+### **Architecture**
+- **Backend**: Django 6.0 + PostgreSQL + SimpleJWT
+- **Frontend**: Next.js 14 + TypeScript + Tailwind CSS
+- **Base de données**: PostgreSQL-First avec indexes optimisés
+- **Authentification**: JWT avec rotation automatique
+- **Audit**: Snapshots complets + tracking IP/UserAgent
+
+### **Modules Actifs**
+- ✅ **Comptabilité OHADA** : Validations strictes + Expert review
+- ✅ **Multi-Devises** : 17 pays OHADA + taux change historisés
+- ✅ **Audit & Permissions** : RBAC granulaire + policies
+- ✅ **Moteur Fiscal** : Calculateurs spécialisés par pays
+- ✅ **Assistant IA** : Mistral AI + feedback utilisateur
 
 ### **Serveurs Actifs**
 - **Backend**: http://localhost:8001 (Django + DRF)
 - **Frontend**: http://localhost:3001 (Next.js 14)
 - **API Documentation**: http://localhost:8001/api/docs/
+- **Health Check**: http://localhost:8001/api/v1/core/health/
 
 ### **Test Users**
 - **Admin**: admin@gorfisca.com / admin123
 - **Organization**: Ma PME Gorfisca
 - **Comptes OHADA**: 9 comptes de base injectés
+- **Devises**: XOF (base) + EUR/USD supportés
 
 ---
 
-*Document généré le 22 mai 2026 - Version finale production-ready*
+*Document généré le 22 mai 2026 - Version 2.0.0 Strong MVP Finance-Grade*

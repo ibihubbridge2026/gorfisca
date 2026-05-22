@@ -179,8 +179,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -202,8 +202,43 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
 
 CORS_ALLOW_CREDENTIALS = True
 
-# REST Framework Token Authentication
-REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'].append('rest_framework.authentication.TokenAuthentication')
+# Simple JWT Configuration
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Access token de 15 minutes
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),    # Refresh token de 7 jours
+    'ROTATE_REFRESH_TOKENS': True,                   # Rotation des refresh tokens
+    'BLACKLIST_AFTER_ROTATION': True,                 # Blacklist après rotation
+    'UPDATE_LAST_LOGIN': True,                       # Mettre à jour last_login
+    
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': env('SECRET_KEY', default='your-secret-key'),
+    
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    
+    # Custom claims pour Gorfisca
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    
+    # Validation et sécurité
+    'VERIFYING_KEY': '',
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+    
+    # Endpoint configuration
+    'AUTH_COOKIE': 'access_token',
+    'AUTH_COOKIE_DOMAIN': None,
+    'AUTH_COOKIE_SECURE': False,  # True en production avec HTTPS
+    'AUTH_COOKIE_USE_SAMESITE': 'Lax',
+    'AUTH_COOKIE_PATH': '/',
+    'AUTH_COOKIE_HTTPONLY': True,
+}
 
 # Logging
 LOGGING = {
