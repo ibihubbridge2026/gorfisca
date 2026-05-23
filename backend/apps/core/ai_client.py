@@ -98,6 +98,40 @@ class AIClient:
         except Exception as e:
             logger.error(f"AI API Error: {str(e)}")
             raise ValidationError(f"Erreur lors de l'appel à l'IA: {str(e)}")
+
+    def chat_completion(self,
+                        messages: List[Dict[str, str]],
+                        temperature: float = 0.7,
+                        max_tokens: int = 800) -> str:
+        """
+        Méthode simplifiée pour conversation chat - wrapper autour de chat()
+        Utilisée par Moki pour les conversations naturelles
+        
+        Args:
+            messages: Historique de conversation avec rôles
+            temperature: Créativité (0.7 = équilibré)
+            max_tokens: Longueur max de réponse
+            
+        Returns:
+            str: Contenu texte de la réponse
+        """
+        try:
+            response = self.chat(
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                use_case='chat_assistant'
+            )
+            
+            # Extraire le contenu de la réponse
+            if response.choices and len(response.choices) > 0:
+                return response.choices[0].message.content
+            else:
+                return "Désolé, je n'ai pas pu générer de réponse."
+                
+        except Exception as e:
+            logger.error(f"Chat completion error: {str(e)}")
+            return f"Erreur technique: {str(e)}"
     
     def _select_model(self, model: Optional[str], use_case: Optional[str]) -> str:
         """

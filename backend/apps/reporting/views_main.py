@@ -15,6 +15,7 @@ from apps.reconciliation.models import BankTransaction
 from apps.core.ai_client import get_ai_client
 from .services.integrity_service import IntegrityService
 from .services.pdf_generator import PDFReportGenerator
+from .services.excel_export_service import ExcelExportService
 from .views_extended import TreasuryRevenueViewSetMixin
 
 
@@ -461,6 +462,253 @@ class ReportingViewSet(TreasuryRevenueViewSetMixin, viewsets.ViewSet):
             return Response({
                 'error': str(e),
                 'message': 'Erreur lors de la génération du bilan PDF'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['get'], url_path='export-balance-excel')
+    def export_balance_excel(self, request):
+        """
+        Exporte le Bilan Excel conforme OHADA
+        Query params: fiscal_year (optionnel, défaut: année en cours)
+        """
+        try:
+            from apps.accounting.services.balance_sheet_service import BalanceSheetService
+            
+            organization = request.user.organization
+            fiscal_year = request.query_params.get('fiscal_year')
+            if fiscal_year:
+                fiscal_year = int(fiscal_year)
+            else:
+                fiscal_year = datetime.now().year
+            
+            balance_service = BalanceSheetService()
+            balance_data = balance_service.calculate_balance_sheet(organization.id, fiscal_year)
+            
+            excel_service = ExcelExportService()
+            response = excel_service.export_balance_sheet(
+                organization=organization,
+                fiscal_year=fiscal_year,
+                data=balance_data
+            )
+            
+            return response
+            
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'message': 'Erreur lors de la génération du bilan Excel'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['get'], url_path='export-income-statement-pdf')
+    def export_income_statement_pdf(self, request):
+        """
+        Génère le Compte de Résultat PDF
+        Query params: fiscal_year (optionnel)
+        """
+        try:
+            organization = request.user.organization
+            fiscal_year = request.query_params.get('fiscal_year', datetime.now().year)
+            fiscal_year = int(fiscal_year)
+            
+            # Récupérer les données du CR
+            income_data = self._get_income_statement_summary(
+                organization, 
+                datetime(fiscal_year, 1, 1).date(),
+                datetime(fiscal_year, 12, 31).date()
+            )
+            
+            pdf_generator = PDFReportGenerator()
+            response = pdf_generator.generate_income_statement(
+                organization=organization,
+                fiscal_year=fiscal_year,
+                data=income_data
+            )
+            
+            return response
+            
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'message': 'Erreur lors de la génération du compte de résultat PDF'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['get'], url_path='export-income-statement-excel')
+    def export_income_statement_excel(self, request):
+        """
+        Exporte le Compte de Résultat Excel
+        Query params: fiscal_year (optionnel)
+        """
+        try:
+            organization = request.user.organization
+            fiscal_year = request.query_params.get('fiscal_year', datetime.now().year)
+            fiscal_year = int(fiscal_year)
+            
+            income_data = self._get_income_statement_summary(
+                organization,
+                datetime(fiscal_year, 1, 1).date(),
+                datetime(fiscal_year, 12, 31).date()
+            )
+            
+            excel_service = ExcelExportService()
+            response = excel_service.export_income_statement(
+                organization=organization,
+                fiscal_year=fiscal_year,
+                data=income_data
+            )
+            
+            return response
+            
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'message': 'Erreur lors de la génération du compte de résultat Excel'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['get'], url_path='export-general-ledger-pdf')
+    def export_general_ledger_pdf(self, request):
+        """
+        Génère le Grand Livre PDF d'un compte
+        Query params: account_code (requis)
+        """
+        try:
+            organization = request.user.organization
+            account_code = request.query_params.get('account_code')
+            
+            if not account_code:
+                return Response({
+                    'error': 'Le code du compte est requis',
+                    'message': 'Paramètre account_code manquant'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Récupérer les écritures du compte
+            entries = JournalLine.objects.filter(
+                entry__organization=organization,
+                entry__posted=True,
+                account__code=account_code
+            ).select_related('entry', 'account').order_by('entry__date')
+            
+            ledger_data = []
+            for line in entries:
+                ledger_data.append({
+                    'date': line.entry.date.isoformat(),
+                    'reference': line.entry.reference or '',
+                    'description': line.entry.description or '',
+                    'amount': float(line.amount),
+                    'line_type': line.line_type
+                })
+            
+            pdf_generator = PDFReportGenerator()
+            response = pdf_generator.generate_general_ledger(
+                organization=organization,
+                account_code=account_code,
+                data=ledger_data
+            )
+            
+            return response
+            
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'message': 'Erreur lors de la génération du grand livre PDF'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['get'], url_path='export-general-ledger-excel')
+    def export_general_ledger_excel(self, request):
+        """
+        Exporte le Grand Livre Excel d'un compte
+        Query params: account_code (requis)
+        """
+        try:
+            organization = request.user.organization
+            account_code = request.query_params.get('account_code')
+            
+            if not account_code:
+                return Response({
+                    'error': 'Le code du compte est requis',
+                    'message': 'Paramètre account_code manquant'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            entries = JournalLine.objects.filter(
+                entry__organization=organization,
+                entry__posted=True,
+                account__code=account_code
+            ).select_related('entry', 'account').order_by('entry__date')
+            
+            ledger_data = []
+            for line in entries:
+                ledger_data.append({
+                    'date': line.entry.date.isoformat(),
+                    'reference': line.entry.reference or '',
+                    'description': line.entry.description or '',
+                    'amount': float(line.amount),
+                    'line_type': line.line_type
+                })
+            
+            excel_service = ExcelExportService()
+            response = excel_service.export_general_ledger(
+                organization=organization,
+                account_code=account_code,
+                data=ledger_data
+            )
+            
+            return response
+            
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'message': 'Erreur lors de la génération du grand livre Excel'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['get'], url_path='export-reconciliation-excel')
+    def export_reconciliation_excel(self, request):
+        """
+        Exporte les transactions rapprochées en Excel
+        Query params: start_date, end_date (optionnels)
+        """
+        try:
+            organization = request.user.organization
+            
+            # Dates par défaut (30 derniers jours)
+            end_date = timezone.now().date()
+            start_date = end_date - timedelta(days=30)
+            
+            if request.query_params.get('start_date'):
+                start_date = datetime.strptime(request.query_params['start_date'], '%Y-%m-%d').date()
+            if request.query_params.get('end_date'):
+                end_date = datetime.strptime(request.query_params['end_date'], '%Y-%m-%d').date()
+            
+            # Récupérer les transactions rapprochées
+            transactions = BankTransaction.objects.filter(
+                organization=organization,
+                status='reconciled',
+                transaction_date__gte=start_date,
+                transaction_date__lte=end_date
+            ).select_related('organization').order_by('-transaction_date')
+            
+            txn_data = []
+            for txn in transactions:
+                txn_data.append({
+                    'transaction_date': txn.transaction_date.isoformat(),
+                    'description': txn.description or '',
+                    'amount': float(txn.amount),
+                    'reconciled_at': txn.reconciled_at.isoformat() if txn.reconciled_at else '',
+                    'account_code': txn.matched_account.code if txn.matched_account else '',
+                    'reference': txn.reference or '',
+                    'status': txn.status,
+                    'notes': txn.notes or ''
+                })
+            
+            excel_service = ExcelExportService()
+            response = excel_service.export_reconciliation(
+                organization=organization,
+                transactions=txn_data
+            )
+            
+            return response
+            
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'message': 'Erreur lors de l\'export des transactions rapprochées'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def _get_income_statement_summary(self, organization, start_date, end_date):

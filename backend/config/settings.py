@@ -38,7 +38,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
-    # 'django_ratelimit',  # Temporarily disabled for development
+    # 'django_ratelimit',  # Temporarily disabled for testing compatibility
 ]
 
 LOCAL_APPS = [
@@ -68,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django_ratelimit.middleware.RatelimitMiddleware',  # Temporarily disabled for testing
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -130,10 +131,11 @@ if USE_REDIS:
         }
     }
 else:
+    # For testing with django-ratelimit, use database cache which is shared
     CACHES = {
         'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'gorfisca-local-cache',
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'django_cache_table',
         }
     }
 # Password validation
@@ -278,11 +280,44 @@ LOGGING = {
             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
             'style': '{',
         },
+        'audit': {
+            'format': '[AUDIT] {asctime} | {levelname} | User: {user_id} | IP: {ip} | Action: {action} | Resource: {resource} | Details: {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
     },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
+        },
+        'audit_log': {
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'audit.log',
+            'formatter': 'audit',
+            'level': 'INFO',
+        },
+        'security_log': {
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'security.log',
+            'formatter': 'verbose',
+            'level': 'WARNING',
+        },
+    },
+    'loggers': {
+        'audit': {
+            'handlers': ['audit_log'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'security': {
+            'handlers': ['security_log', 'console'],
+            'level': 'WARNING',
+            'propagate': False,
         },
     },
     'root': {
@@ -290,6 +325,17 @@ LOGGING = {
         'level': env('LOG_LEVEL', default='INFO'),
     },
 }
+
+# Rate Limiting Configuration
+# Rate limiting configuration - temporarily disabled for testing compatibility
+RATELIMIT_ENABLE = False  # Disable during tests to avoid cache backend issues
+RATELIMIT_USE_CACHE = 'default'
+RATELIMIT_FAIL_OPEN = False  # Bloquer en cas d'erreur cache
+RATELIMIT_IP_META_KEY = 'REMOTE_ADDR'
+
+# Audit Logging Configuration
+AUDIT_LOG_ENABLED = True
+AUDIT_LOG_FILE = BASE_DIR / 'logs' / 'audit.log'
 
 # Celery Configuration
 CELERY_BROKER_URL = f"redis://{env('REDIS_HOST', default='redis')}:{env('REDIS_PORT', default='6379')}/0"

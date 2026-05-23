@@ -95,7 +95,7 @@ class UserViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def register(self, request):
-        """Register new user with automatic organization creation"""
+        """Register new user with automatic organization creation or invitation acceptance"""
         print("=" * 60)
         print("[REGISTER] Data received:", dict(request.data))
         serializer = RegisterSerializer(data=request.data)
@@ -106,10 +106,11 @@ class UserViewSet(viewsets.ModelViewSet):
         print("[REGISTER] Validation OK")
         print("=" * 60)
         
-        # Check for invitation token
+        # Check for invitation token FIRST
         invitation_token = request.data.get('invitation_token')
         company_name = request.data.get('company_name', '')
         organization = None
+        user_role = 'viewer'  # default
         
         if invitation_token:
             # Handle invitation case - user joins existing organization
@@ -120,27 +121,50 @@ class UserViewSet(viewsets.ModelViewSet):
                     token=invitation_token,
                     is_accepted=False
                 )
+                
+                # Verify email matches
+                if invitation.email.lower() != request.data.get('email', '').lower():
+                    return Response(
+                        {'detail': "L'email ne correspond pas à l'invitation."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                
+                # Check expiration
+                if invitation.is_expired():
+                    return Response(
+                        {'detail': "L'invitation a expiré."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                
                 organization = invitation.organization
                 user_role = invitation.role
-                # Mark invitation as accepted
-                invitation.is_accepted = True
-                invitation.accepted_at = timezone.now()
-                invitation.save()
+                
             except OrganizationInvitation.DoesNotExist:
                 return Response(
-                    {'detail': 'Token d\'invitation invalide ou expiré.'},
+                    {'detail': "Token d'invitation invalide ou déjà utilisé."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         
-        # Create user
+        # Create user (organization will be set after)
         user = serializer.save()
         
         if organization:
-            # Assign to existing organization (invitation case)
+            # Invitation case: assign to existing organization
             user.organization = organization
             user.role = user_role
+            user.save()
+            
+            # Mark invitation as accepted
+            try:
+                invitation = OrganizationInvitation.objects.get(token=invitation_token, is_accepted=False)
+                invitation.is_accepted = True
+                invitation.accepted_at = timezone.now()
+                invitation.accepted_by = user
+                invitation.save()
+            except OrganizationInvitation.DoesNotExist:
+                pass  # Already processed
         else:
-            # Create automatic organization for new founder
+            # Normal registration: create automatic organization for new founder
             from apps.organizations.models import Organization
             import uuid
             
@@ -157,8 +181,7 @@ class UserViewSet(viewsets.ModelViewSet):
             # Assign user as admin of their organization
             user.organization = organization
             user.role = 'admin'
-        
-        user.save()
+            user.save()
         
         # Login and return JWT token
         from rest_framework_simplejwt.tokens import RefreshToken
@@ -174,7 +197,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 'name': organization.name,
                 'legal_identifier': organization.legal_identifier
             },
-            'needs_onboarding': organization.legal_identifier.startswith('PENDING-')
+            'needs_onboarding': not invitation_token and organization.legal_identifier.startswith('PENDING-')
         }, status=status.HTTP_201_CREATED)
     
     @action(detail=False, methods=['get'])

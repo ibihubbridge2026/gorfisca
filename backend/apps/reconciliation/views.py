@@ -18,6 +18,11 @@ from .serializers import (
 from .services import MatchingService, TransactionParserService
 from .matching_engine import MatchingEngineService
 from apps.permissions.permissions import IsOrgAdmin, IsAccountant, HasMinimumRoleLevel
+from apps.core.decorators import audit_log, validate_file_upload, rate_limit_advanced
+import logging
+
+security_logger = logging.getLogger('security')
+audit_logger = logging.getLogger('audit')
 class BulkImportThrottle(UserRateThrottle):
     """Rate limiter spécifique pour les imports en masse"""
     scope = 'bulk_import'

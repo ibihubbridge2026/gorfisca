@@ -1,50 +1,28 @@
 ```
+# Database
+db.sqlite3
+
 # Dependencies
+.venv/
+venv/
+node_modules/
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 env/
-venv/
-ENV/
-.venv/
-.env
-.env.local
-.env.*
-
-# Testing
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
 .coverage
-coverage/
-htmlcov/
-.pytest_cache/
-__pycache__/
-
-# Build and distribution artifacts  
-build/
-dist/
-*.egg-info/
-*.egg
-
-# Logs
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
 *.log
-
-# OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Editor specific
-.vscode/
-.idea/
-*.swp
-*.swo
-*.tmp
 ```
-node_modules/
-.next/
-*.sqlite3

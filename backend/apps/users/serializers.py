@@ -78,6 +78,8 @@ class RegisterSerializer(serializers.ModelSerializer):
     """Serializer for user registration - Simplified for 3-second rule"""
     
     password = serializers.CharField(write_only=True, validators=[validate_password])
+    company_name = serializers.CharField(required=False, allow_blank=True, write_only=True)
+    invitation_token = serializers.CharField(required=False, write_only=True)
     
     class Meta:
         model = User
@@ -88,7 +90,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'phone',
-            'role'
+            'role',
+            'company_name',
+            'invitation_token'
         ]
         extra_kwargs = {
             'role': {'required': False, 'allow_null': True},
@@ -109,8 +113,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
     
     def create(self, validated_data):
-        """Create user with hashed password - Simplified for 3-second rule"""
+        """Create user with hashed password - organization handling removed (done in view)"""
         password = validated_data.pop('password')
+        # Remove non-model fields
+        validated_data.pop('company_name', None)
+        validated_data.pop('invitation_token', None)
         
         # Set default values for optional fields
         if 'role' not in validated_data or validated_data['role'] is None:

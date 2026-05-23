@@ -106,7 +106,7 @@ export default function SettingsPage() {
 
         // Fetch organization users
         const usersResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/organizations/${user?.organization}/users/`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/organizations/organizations/${user?.organization}/users/`,
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -114,7 +114,7 @@ export default function SettingsPage() {
 
         // Fetch invitations
         const invitationsResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/organizations/${user?.organization}/invitations/`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/organizations/organizations/${user?.organization}/invitations/`,
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -162,7 +162,7 @@ export default function SettingsPage() {
     try {
       const token = localStorage.getItem('access_token')
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/organizations/${user.organization}/invite/`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/organizations/organizations/${user.organization}/invite/`,
         {
           email: inviteForm.email,
           role: inviteForm.role

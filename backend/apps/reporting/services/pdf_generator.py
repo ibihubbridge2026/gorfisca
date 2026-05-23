@@ -306,7 +306,7 @@ class PDFReportGenerator:
         
         return data
     
-    def _get_table_style(self) -> TableStyle:
+    def _get_table_style(self):
         """Retourne le style commun pour les tableaux"""
         return TableStyle([
             # En-tête
