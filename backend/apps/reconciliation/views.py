@@ -252,9 +252,26 @@ class BankTransactionViewSet(viewsets.ModelViewSet):
             )
             
             serializer = ImportBatchSerializer(import_batch)
+            
+            # Build detailed status message
+            message_parts = []
+            if import_batch.imported_rows > 0:
+                message_parts.append(f'{import_batch.imported_rows} nouvelles transactions ajoutées')
+            if import_batch.skipped_duplicates > 0:
+                message_parts.append(f'{import_batch.skipped_duplicates} doublons ignorés')
+            if import_batch.failed_rows > 0:
+                message_parts.append(f'{import_batch.failed_rows} erreurs')
+            
+            status_message = 'Importation terminée. ' + ', '.join(message_parts) + '.'
+            
             return Response({
+                'status': 'completed',
                 'batch': serializer.data,
-                'message': f'{import_batch.imported_rows} transactions importées avec succès'
+                'imported_rows': import_batch.imported_rows,
+                'skipped_duplicates': import_batch.skipped_duplicates,
+                'failed_rows': import_batch.failed_rows,
+                'total_processed': import_batch.total_rows,
+                'message': status_message
             }, status=status.HTTP_201_CREATED)
             
         except Exception as e:

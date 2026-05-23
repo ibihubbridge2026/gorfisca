@@ -16,6 +16,7 @@ import {
   Lock,
   RefreshCw
 } from 'lucide-react'
+import { toast } from 'sonner'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
@@ -217,9 +218,48 @@ export default function ImportsPage() {
         }
       )
 
-      // Succès - passer à l'étape 2 avec les données réelles
+      // Succès - traiter la réponse enrichie avec statistiques
       const batchData = response.data.batch
+      const importStats = {
+        imported_rows: response.data.imported_rows || 0,
+        skipped_duplicates: response.data.skipped_duplicates || 0,
+        failed_rows: response.data.failed_rows || 0,
+        total_processed: response.data.total_processed || 0,
+        message: response.data.message || 'Importation terminée'
+      }
+      
       console.log('Import réussi:', batchData)
+      console.log('Statistiques:', importStats)
+
+      // Notifications toast avec détection de doublons
+      if (importStats.skipped_duplicates > 0) {
+        // Toast principal - succès avec avertissement de doublons
+        toast.success(
+          `Importation réussie : ${importStats.total_processed} transactions traitées.`,
+          {
+            duration: 5000,
+            description: `${importStats.imported_rows} nouvelles transactions ajoutées.`
+          }
+        )
+        
+        // Toast secondaire - information sur les doublons
+        toast.warning(
+          `Note : ${importStats.skipped_duplicates} transactions existaient déjà en base de données et ont été fusionnées/ignorées pour éviter les doublons.`,
+          {
+            duration: 6000,
+            icon: '⚠️'
+          }
+        )
+      } else {
+        // Toast succès simple - pas de doublons
+        toast.success(
+          `Importation réussie : ${importStats.imported_rows} transactions traitées.`,
+          {
+            duration: 4000,
+            description: 'Toutes les transactions ont été ajoutées avec succès.'
+          }
+        )
+      }
 
       // Récupérer les vraies transactions mappées depuis la réponse backend
       const realMapped: MappedTransaction[] = Array.isArray(response.data?.mapped_transactions)
@@ -476,7 +516,8 @@ export default function ImportsPage() {
                       </div>
                     </div>
                   )}
-                </div>
+
+                                  </div>
               </motion.div>
             )}
 

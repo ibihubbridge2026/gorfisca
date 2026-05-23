@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
@@ -24,6 +24,23 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const [isInvitation, setIsInvitation] = useState(false)
+  const [inviteToken, setInviteToken] = useState('')
+
+  // Détecter le token d'invitation
+  useEffect(() => {
+    const token = searchParams.get('invite_token')
+    if (token) {
+      setIsInvitation(true)
+      setInviteToken(token)
+      // Pré-remplir l'email si disponible dans l'URL
+      const email = searchParams.get('email')
+      if (email) {
+        setFormData(prev => ({ ...prev, email }))
+      }
+    }
+  }, [searchParams])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -44,18 +61,47 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await authService.register({
-        email: formData.email,
-        username: formData.email, // Utiliser email comme username
-        password: formData.password,
-        first_name: formData.firstName,
-        last_name: '', // Nom vide pour simplifier
-        phone: '', // Téléphone vide pour simplifier
-        company_name: formData.companyName // Ajouter le nom de l'entreprise
-      })
+      let response
       
-      // Check if onboarding is needed
-      if (response.needs_onboarding) {
+      if (isInvitation && inviteToken) {
+        // Flux d'invitation : utiliser l'endpoint accept-invite
+        const acceptData = {
+          token: inviteToken,
+          user: {
+            email: formData.email,
+            password: formData.password,
+            first_name: formData.firstName,
+            last_name: ''
+          }
+        }
+        
+        // Appeler l'endpoint d'acceptation d'invitation
+        const apiClient = (await import('@/services/api/index')).apiClient
+        const apiResponse = await apiClient.post('/organizations/accept-invite/', acceptData)
+        response = apiResponse.data
+      } else {
+        // Flux normal : créer organisation + utilisateur
+        response = await authService.register({
+          email: formData.email,
+          username: formData.email,
+          password: formData.password,
+          first_name: formData.firstName,
+          last_name: '',
+          phone: '',
+          company_name: formData.companyName
+        })
+      }
+      
+      // Stocker le token si présent
+      if (response.token) {
+        localStorage.setItem('authToken', response.token)
+      }
+      
+      // Redirection selon le cas
+      if (isInvitation) {
+        // Pour les invitations, rediriger directement vers le dashboard
+        router.push('/fr/dashboard')
+      } else if (response.needs_onboarding) {
         router.push('/fr/onboarding')
       } else {
         router.push('/fr/dashboard')
@@ -161,24 +207,33 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Company Name Field */}
-              <div>
-                <label className="block text-sm font-medium text-on-surface mb-2">
-                  Nom de l'entreprise
-                </label>
-                <div className="relative">
-                  <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
-                  <input
-                    type="text"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleChange}
-                    className="w-full bg-surface-container-low border-none rounded-full pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
-                    placeholder="Nom de votre entreprise"
-                    required
-                  />
+              {/* Company Name Field - masqué pour les invitations */}
+              {!isInvitation && (
+                <div>
+                  <label className="block text-sm font-medium text-on-surface mb-2">
+                    Nom de l'entreprise
+                  </label>
+                  <div className="relative">
+                    <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+                    <input
+                      type="text"
+                      name="companyName"
+                      value={formData.companyName}
+                      onChange={handleChange}
+                      className="w-full bg-surface-container-low border-none rounded-full pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
+                      placeholder="Nom de votre entreprise"
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Message d'invitation */}
+              {isInvitation && (
+                <div className="bg-primary-container text-on-primary p-3 rounded-full text-sm text-center">
+                  🎉 Vous avez été invité à rejoindre une organisation !
+                </div>
+              )}
 
               {/* Email */}
               <div>

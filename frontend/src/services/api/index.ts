@@ -1,11 +1,20 @@
 import axios from 'axios'
 
-// API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// API Configuration - Logique défensive pour éviter les doublons /api/v1/api/v1/
+const envBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+// Si la variable d'environnement contient déjà '/api/v1', on l'utilise brute.
+// Sinon, on ajoute '/api/v1'. Cela empêche mathématiquement le doublement.
+const CLEAN_BASE_URL = envBaseUrl.endsWith('/api/v1') 
+  ? envBaseUrl 
+  : `${envBaseUrl}/api/v1`;
+
+// Exporter la baseURL propre pour les autres services
+export { CLEAN_BASE_URL }
 
 // Create axios instance with default config
 export const apiClient = axios.create({
-  baseURL: `${API_BASE_URL}/api/v1`,
+  baseURL: CLEAN_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

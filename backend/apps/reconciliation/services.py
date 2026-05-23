@@ -54,13 +54,31 @@ class TransactionParserService:
                     print(f"Error parsing row {row_num}: {e}")
                     continue
             
-            # Create transactions in bulk
-            with transaction.atomic():
-                BankTransaction.objects.bulk_create(transactions, batch_size=100)
+            # Create transactions with duplicate handling
+            inserted_count = 0
+            skipped_duplicates = 0
             
-            # Update batch status
+            with transaction.atomic():
+                for transaction_data in transactions:
+                    # Check for existing transaction with same reference
+                    existing = BankTransaction.objects.filter(
+                        reference=transaction_data.get('reference'),
+                        organization=organization
+                    ).first()
+                    
+                    if existing:
+                        # Skip duplicate - could also update fields here if needed
+                        skipped_duplicates += 1
+                        print(f"Skipping duplicate transaction: {transaction_data.get('reference')}")
+                    else:
+                        # Create new transaction
+                        BankTransaction.objects.create(**transaction_data)
+                        inserted_count += 1
+            
+            # Update batch status with statistics
             batch.total_rows = len(transactions) + failed_rows
-            batch.imported_rows = len(transactions)
+            batch.imported_rows = inserted_count
+            batch.skipped_duplicates = skipped_duplicates
             batch.failed_rows = failed_rows
             batch.status = 'completed'
             batch.completed_at = timezone.now()

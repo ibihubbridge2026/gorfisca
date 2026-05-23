@@ -45,3 +45,6 @@ Thumbs.db
 *.swo
 *.tmp
 ```
+node_modules/
+.next/
+*.sqlite3

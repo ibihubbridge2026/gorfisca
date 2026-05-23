@@ -119,20 +119,174 @@ class OrganizationViewSet(viewsets.ModelViewSet):
         serializer = OrganizationInvitationSerializer(invitations, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_path='current')
     def current(self, request):
-        """Get current user's organization"""
+        """Get current user's organization - Ultra-robuste multi-tenant"""
         user = request.user
         
-        print(f"DEBUG: User {user.email}, has organization attr: {hasattr(user, 'organization')}")
-        if hasattr(user, 'organization'):
-            print(f"DEBUG: Organization value: {user.organization}")
+        # 1. Priorité 1: current_organization sur le User (si existant)
+        if hasattr(user, 'current_organization') and user.current_organization:
+            organization = user.current_organization
         
-        if not hasattr(user, 'organization') or not user.organization:
+        # 2. Priorité 2: organization direct (legacy)
+        elif hasattr(user, 'organization') and user.organization:
+            organization = user.organization
+        
+        # 3. Priorité 3: Première organisation liée à l'utilisateur
+        else:
+            from .models import Organization
+            organization = Organization.objects.filter(users=user).first()
+        
+        # 4. Fallback pour les devs locaux (is_staff)
+        if not organization and user.is_staff:
+            from .models import Organization
+            organization = Organization.objects.first()
+            if organization:
+                # Auto-lier le dev pour corriger la session
+                organization.users.add(user)
+                if hasattr(user, 'organization'):
+                    user.organization = organization
+                    user.save()
+        
+        # 5. Si vraiment aucune organisation
+        if not organization:
             return Response(
-                {'detail': 'Aucune organisation associée à cet utilisateur.'},
-                status=status.HTTP_404_NOT_FOUND
+                {
+                    'detail': 'Aucune organisation associée à cet utilisateur.',
+                    'code': 'NO_ORGANIZATION',
+                    'user_id': user.id,
+                    'email': user.email
+                },
+                status=status.HTTP_400_BAD_REQUEST  # 400 au lieu de 404
             )
         
-        serializer = self.get_serializer(user.organization)
+        serializer = self.get_serializer(organization)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['post'], url_path='accept-invite')
+    def accept_invite(self, request):
+        """Accepter une invitation et rattacher/utiliser l'utilisateur"""
+        from rest_framework import status
+        from apps.users.models import User
+        from django.utils import timezone
+        
+        token = request.data.get('token')
+        user_data = request.data.get('user', {})  # Pour création de compte si nécessaire
+        
+        if not token:
+            return Response(
+                {'detail': 'Token d\'invitation requis.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            invitation = self.get_queryset().get(
+                token=token,
+                is_accepted=False
+            )
+        except self.get_queryset().model.DoesNotExist:
+            return Response(
+                {'detail': 'Token d\'invitation invalide ou déjà utilisé.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Vérifier l'expiration
+        if invitation.is_expired():
+            return Response(
+                {'detail': 'L\'invitation a expiré.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Cas 1: Utilisateur existe déjà (connecté)
+        if request.user.is_authenticated:
+            user = request.user
+            
+            # Vérifier que l'email correspond
+            if user.email.lower() != invitation.email.lower():
+                return Response(
+                    {'detail': 'Cette invitation n\'est pas pour votre adresse email.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Accepter l'invitation
+            if invitation.accept(user):
+                # Rattacher à l'organisation
+                invitation.organization.users.add(user)
+                
+                # Mettre à jour le rôle si nécessaire
+                if hasattr(user, 'role'):
+                    user.role = invitation.role
+                    user.save()
+                
+                return Response({
+                    'message': 'Invitation acceptée avec succès.',
+                    'organization': self.get_serializer(invitation.organization).data,
+                    'role': invitation.role
+                })
+            else:
+                return Response(
+                    {'detail': 'Impossible d\'accepter cette invitation.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        
+        # Cas 2: Création de compte + acceptation
+        else:
+            if not user_data.get('email') or not user_data.get('password'):
+                return Response(
+                    {'detail': 'Email et mot de passe requis pour créer un compte.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Vérifier que l'email correspond à l'invitation
+            if user_data['email'].lower() != invitation.email.lower():
+                return Response(
+                    {'detail': 'L\'email ne correspond pas à l\'invitation.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Créer l'utilisateur
+            try:
+                user = User.objects.create_user(
+                    username=user_data['email'],
+                    email=user_data['email'],
+                    password=user_data['password'],
+                    first_name=user_data.get('first_name', ''),
+                    last_name=user_data.get('last_name', '')
+                )
+                
+                # Accepter l'invitation
+                if invitation.accept(user):
+                    # Rattacher à l'organisation
+                    invitation.organization.users.add(user)
+                    user.role = invitation.role
+                    user.save()
+                    
+                    # Générer des tokens JWT
+                    from rest_framework_simplejwt.tokens import RefreshToken
+                    refresh = RefreshToken.for_user(user)
+                    
+                    return Response({
+                        'message': 'Compte créé et invitation acceptée.',
+                        'user': {
+                            'id': user.id,
+                            'email': user.email,
+                            'first_name': user.first_name,
+                            'last_name': user.last_name,
+                            'role': user.role
+                        },
+                        'organization': self.get_serializer(invitation.organization).data,
+                        'token': str(refresh.access_token),
+                        'refresh': str(refresh)
+                    })
+                else:
+                    user.delete()  # Nettoyer si l'acceptation échoue
+                    return Response(
+                        {'detail': 'Impossible d\'accepter cette invitation.'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                    
+            except Exception as e:
+                return Response(
+                    {'detail': f'Erreur lors de la création du compte: {str(e)}'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )

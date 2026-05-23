@@ -265,6 +265,7 @@ class ImportBatch(models.Model):
     # Import statistics
     total_rows = models.IntegerField(default=0, verbose_name='Total lignes')
     imported_rows = models.IntegerField(default=0, verbose_name='Lignes importées')
+    skipped_duplicates = models.IntegerField(default=0, verbose_name='Doublons ignorés')
     failed_rows = models.IntegerField(default=0, verbose_name='Lignes échouées')
     
     # Error tracking

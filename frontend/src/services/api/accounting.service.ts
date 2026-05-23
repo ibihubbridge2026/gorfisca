@@ -1,12 +1,12 @@
 import axios from 'axios'
 import { Account, JournalEntry } from '@/types/accounting'
 
-// API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// Importer la baseURL propre
+import { CLEAN_BASE_URL } from './index'
 
 // Create axios instance with default config
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: CLEAN_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -192,7 +192,7 @@ export const accountingService = {
   async postJournalEntry(id: string): Promise<JournalEntry> {
     try {
       const response = await apiClient.post<JournalEntry>(
-        `/api/v1/accounting/journal-entries/${id}/post/`
+        `/accounting/journal-entries/${id}/post/`
       )
       return response.data
     } catch (error) {
@@ -205,7 +205,7 @@ export const accountingService = {
   async getUnpostedEntries(): Promise<JournalEntry[]> {
     try {
       const response = await apiClient.get<ApiResponse<JournalEntry>>(
-        '/api/v1/accounting/journal-entries/unposted/'
+        '/accounting/journal-entries/unposted/'
       )
       return response.data.results
     } catch (error) {
@@ -217,7 +217,7 @@ export const accountingService = {
   // Validate an AI-suggested entry
   async validateAIEntry(entryId: number): Promise<any> {
     try {
-      const response = await apiClient.post(`/api/v1/accounting/journal-entries/${entryId}/validate_ai_entry/`)
+      const response = await apiClient.post(`/accounting/journal-entries/${entryId}/validate_ai_entry/`)
       return response.data
     } catch (error) {
       console.error('Error validating AI entry:', error)
@@ -228,7 +228,7 @@ export const accountingService = {
   // Get entries pending validation
   async getPendingValidationEntries(): Promise<JournalEntry[]> {
     try {
-      const response = await apiClient.get('/api/v1/accounting/journal-entries/pending_validation/')
+      const response = await apiClient.get('/accounting/journal-entries/pending_validation/')
       return response.data.results || response.data
     } catch (error) {
       console.error('Error fetching pending validation entries:', error)
@@ -239,7 +239,7 @@ export const accountingService = {
   // Get single entry details
   async getEntry(entryId: number): Promise<JournalEntry> {
     try {
-      const response = await apiClient.get(`/api/v1/accounting/journal-entries/${entryId}/`)
+      const response = await apiClient.get(`/accounting/journal-entries/${entryId}/`)
       return response.data
     } catch (error) {
       console.error('Error fetching entry:', error)
@@ -250,7 +250,7 @@ export const accountingService = {
   // Verify blockchain integrity
   async verifyChain(entryId: number): Promise<any> {
     try {
-      const response = await apiClient.post(`/api/v1/accounting/journal-entries/${entryId}/verify_chain/`)
+      const response = await apiClient.post(`/accounting/journal-entries/${entryId}/verify_chain/`)
       return response.data
     } catch (error) {
       console.error('Error verifying chain:', error)
@@ -261,7 +261,7 @@ export const accountingService = {
   // Delete journal entry
   async deleteJournalEntry(entryId: number): Promise<void> {
     try {
-      await apiClient.delete(`/api/v1/accounting/journal-entries/${entryId}/`)
+      await apiClient.delete(`/accounting/journal-entries/${entryId}/`)
     } catch (error) {
       console.error('Error deleting entry:', error)
       throw error

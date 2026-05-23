@@ -1,12 +1,13 @@
 import axios from 'axios'
 import { User } from '@/types/accounting'
+import { apiClient } from './index'
 
-// API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// Importer la baseURL propre
+import { CLEAN_BASE_URL } from './index'
 
-// Create axios instance for auth
+// Create axios instance for auth (keep separate for CSRF handling)
 const authClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: CLEAN_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
