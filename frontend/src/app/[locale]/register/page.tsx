@@ -77,7 +77,7 @@ export default function RegisterPage() {
         
         // Appeler l'endpoint d'acceptation d'invitation
         const apiClient = (await import('@/services/api/index')).apiClient
-        const apiResponse = await apiClient.post('/organizations/accept-invite/', acceptData)
+        const apiResponse = await apiClient.post('/api/v1/organizations/accept-invite/', acceptData)
         response = apiResponse.data
       } else {
         // Flux normal : créer organisation + utilisateur

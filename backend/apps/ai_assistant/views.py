@@ -550,3 +550,52 @@ class AIAssistantViewSet(viewsets.ViewSet):
             '781': 'Reprises sur amortissements'
         }
         return labels.get(account_code, f'Compte {account_code}')
+
+    @action(detail=False, methods=['post'], url_path='chat')
+    def chat(self, request):
+        """
+        Nouveau: Endpoint pour conversation naturelle avec Moki
+        - Supporte les questions comptables, conseils, guidance
+        - Réponses humaines et contextuelles
+        - Mémoire de conversation courte
+        - Apprentissage implicite via feedback
+        
+        Payload:
+        {
+            "message": "Comment comptabiliser une facture d'électricité ?",
+            "conversation_history": [...]  // optionnel
+        }
+        """
+        from apps.feedback.models import UserFeedback
+        
+        organization = request.user.organization
+        user_message = request.data.get('message', '')
+        conversation_history = request.data.get('conversation_history', [])
+        
+        if not user_message.strip():
+            return Response({
+                'success': False,
+                'error': 'Message vide'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Appel au service IA avec conversation
+        agent_service = self.get_agent_service()
+        result = agent_service.chat_with_assistant(
+            user_message=user_message,
+            organization=organization,
+            user=request.user,
+            conversation_history=conversation_history
+        )
+        
+        if result.get('success'):
+            return Response({
+                'success': True,
+                'data': result.get('data'),
+                'message': 'Réponse générée avec succès'
+            })
+        else:
+            return Response({
+                'success': False,
+                'error': result.get('error', 'Erreur inconnue'),
+                'message': 'Échec de la génération de réponse'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

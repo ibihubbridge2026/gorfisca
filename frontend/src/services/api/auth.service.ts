@@ -184,7 +184,7 @@ export const authService = {
       }
       
       const response = await authClient.patch(
-        `/api/organizations/${organizationId}/`,
+        `/api/v1/organizations/organizations/${organizationId}/`,
         data,
         {
           headers: {
@@ -196,6 +196,62 @@ export const authService = {
       return response.data
     } catch (error) {
       console.error('Update organization error:', error)
+      throw error
+    }
+  },
+
+  // Complete onboarding
+  async completeOnboarding(data: {
+    country_code: string
+    nif: string
+    rccm: string
+    official_name: string
+    address: string
+    phone: string
+  }): Promise<any> {
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) {
+        throw new Error('No authentication token found')
+      }
+      
+      const response = await authClient.post(
+        '/api/v1/onboarding/complete/',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      
+      return response.data
+    } catch (error) {
+      console.error('Complete onboarding error:', error)
+      throw error
+    }
+  },
+
+  // Check onboarding status
+  async checkOnboardingStatus(): Promise<any> {
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) {
+        throw new Error('No authentication token found')
+      }
+      
+      const response = await authClient.get(
+        '/api/v1/onboarding/status/',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      
+      return response.data
+    } catch (error) {
+      console.error('Check onboarding status error:', error)
       throw error
     }
   },

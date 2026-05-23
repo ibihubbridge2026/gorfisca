@@ -398,8 +398,154 @@ Important:
         suggested_entry['total_credit'] = total_credit
         suggested_entry['confidence'] = analysis_data.get('confidence', 0.0)
         
-        return {
-            'success': True,
-            'suggested_entry': suggested_entry,
-            'analysis_data': data
-        }
+        return {'success': True, 'entry': suggested_entry}
+
+    def chat_with_assistant(self, user_message: str, organization: Organization, user=None, conversation_history: List[Dict] = None) -> Dict:
+        """
+        Nouveau: Conversation naturelle avec l'assistant IA Moki
+        - Réponses humaines et contextuelles
+        - Conseils comptables guidés
+        - Support multilingue (Français prioritaire)
+        - Mémoire de conversation courte
+        
+        Args:
+            user_message: Message de l'utilisateur
+            organization: Organisation contexte
+            user: Utilisateur pour personnalisation
+            conversation_history: Historique récent de la conversation
+            
+        Returns:
+            Dict avec réponse naturelle et actions suggérées
+        """
+        from apps.feedback.models import UserFeedback
+        
+        # Construire le contexte de l'organisation
+        org_context = self._build_organization_context(organization)
+        
+        # Système de prompt pour comportement humain
+        system_prompt = f"""Tu es Moki, l'assistant comptable intelligent de Gorfisca.
+        
+CONTEXTE ORGANISATION:
+{org_context}
+
+TON RÔLE:
+- Tu es un assistant comptable EXPERT mais HUMAIN et APPROCHABLE
+- Tu parles principalement en FRANÇAIS (langue par défaut)
+- Tu es empathique, patient et pédagogique
+- Tu donnes des conseils pratiques mais RESTE DANS TON DOMAINE (comptabilité, finance, fiscalité OHADA)
+- Si on te pose des questions hors sujet, réponds gentiment que tu n'es pas expert dans ce domaine
+- Tu utilises un ton professionnel mais CHALEUREUX
+- Tu expliques les concepts complexes simplement
+- Tu poses des questions de clarification si besoin
+- Tu reconnais tes limites et incites à consulter un expert comptable humain pour les cas complexes
+
+RÈGLES DE CONVERSATION:
+1. Réponds toujours en français sauf demande explicite
+2. Sois concis mais complet (max 5-6 phrases sauf explications techniques)
+3. Utilise des exemples concrets liés à l'organisation de l'utilisateur
+4. Propose des actions concrètes quand c'est pertinent
+5. Garde un ton positif et encourageant
+6. N'invente jamais de données financières
+7. Base-toi sur les données réelles de l'organisation via le contexte
+
+FORMAT DE RÉPONSE:
+{{
+    "response": "Ta réponse naturelle et humaine ici",
+    "suggested_actions": [
+        {{"label": "Voir les écritures du mois", "action": "navigate", "target": "/dashboard/journal"}},
+        {{"label": "Exporter le bilan", "action": "export", "target": "balance_sheet"}}
+    ],
+    "needs_human_expert": false,
+    "topics": ["comptabilite", "tva", "bilan"]
+}}
+"""
+
+        # Préparer les messages pour l'API
+        messages = [{"role": "system", "content": system_prompt}]
+        
+        # Ajouter l'historique de conversation (mémoire court terme)
+        if conversation_history and len(conversation_history) > 0:
+            # Garder seulement les 5 derniers échanges pour éviter le contexte trop long
+            recent_history = conversation_history[-5:]
+            for msg in recent_history:
+                messages.append({"role": msg.get("role", "user"), "content": msg.get("content", "")})
+        
+        # Ajouter le message actuel
+        messages.append({"role": "user", "content": user_message})
+        
+        try:
+            # Appel à l'IA avec le client centralisé
+            response_text = self.ai_client.chat_completion(
+                messages=messages,
+                temperature=0.7,  # Un peu de créativité pour le ton humain
+                max_tokens=800
+            )
+            
+            # Parser la réponse JSON
+            try:
+                # Extraire le JSON de la réponse
+                json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+                if json_match:
+                    parsed_response = json.loads(json_match.group())
+                else:
+                    # Fallback: créer une réponse structurée
+                    parsed_response = {
+                        "response": response_text,
+                        "suggested_actions": [],
+                        "needs_human_expert": False,
+                        "topics": ["general"]
+                    }
+            except json.JSONDecodeError:
+                parsed_response = {
+                    "response": response_text,
+                    "suggested_actions": [],
+                    "needs_human_expert": False,
+                    "topics": ["general"]
+                }
+            
+            # Sauvegarder le feedback implicitement (apprentissage)
+            if user:
+                UserFeedback.objects.create(
+                    organization=organization,
+                    user=user,
+                    feedback_type='document_analysis',  # Type générique pour chat
+                    rating=5,  # Par défaut, on assume positif
+                    transaction_description=user_message[:200],
+                    comment=f"Chat interaction: {response_text[:100]}",
+                    ai_confidence=parsed_response.get('confidence', 0.8)
+                )
+            
+            return {
+                'success': True,
+                'data': parsed_response,
+                'conversation_updated': True
+            }
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'data': {
+                    'response': "Désolé, je rencontre un problème technique. Peux-tu réessayer dans quelques instants ?",
+                    'suggested_actions': [],
+                    'needs_human_expert': False
+                }
+            }
+    
+    def _build_organization_context(self, organization: Organization) -> str:
+        """Construit un contexte résumé de l'organisation pour l'IA"""
+        from apps.accounting.models import Account, JournalEntry
+        from apps.reconciliation.models import ReconciliationBatch
+        
+        context = f"""
+Organisation: {organization.name}
+Pays: {organization.country}
+Devise: {organization.currency or 'XAF'}
+Secteur: {organization.industry or 'Non spécifié'}
+
+Données récentes:
+- Nombre de comptes actifs: {Account.objects.filter(organization=organization, is_active=True).count()}
+- Écritures ce mois-ci: {JournalEntry.objects.filter(organization=organization, entry_date__month=datetime.now().month).count()}
+- Lots de rapprochement: {ReconciliationBatch.objects.filter(organization=organization).count()}
+"""
+        return context

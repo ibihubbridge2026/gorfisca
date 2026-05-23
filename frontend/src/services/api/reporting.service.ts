@@ -389,7 +389,7 @@ export const getOrganizationData = async (): Promise<{
   } | null
 }> => {
   try {
-    const response = await apiClient.get('/organizations/current/')
+    const response = await apiClient.get('/api/v1/organizations/current/')
     return response.data
   } catch (error) {
     console.error('Error fetching organization data:', error)
